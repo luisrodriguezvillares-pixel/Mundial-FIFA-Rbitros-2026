@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ranking Arbitral FIFA 2026</title>
+
 <style>
 body{margin:0;font-family:Arial;background:#0a0f1f;color:white}
 header{background:#111b33;padding:16px;text-align:center;font-weight:900}
@@ -21,21 +22,34 @@ th{opacity:.7}
 .empty{opacity:.7;font-size:13px}
 </style>
 </head>
+
 <body>
+
 <header>🏆 RANKING ARBITRAL · FIFA WORLD CUP 2026</header>
+
 <div class="box">
 <h2>Clasificación de árbitros</h2>
+
 <table>
 <thead>
-<tr><th>#</th><th>Árbitro</th><th>PJ</th><th>Media</th><th>Mejor</th><th>Peor</th><th>Índice</th></tr>
+<tr>
+<th>#</th>
+<th>Árbitro</th>
+<th>PJ</th>
+<th>Media</th>
+<th>Mejor</th>
+<th>Peor</th>
+<th>Índice</th>
+</tr>
 </thead>
 <tbody id="rankingBody"></tbody>
 </table>
-<p class="empty" id="emptyMsg">Cargando datos...</p>
+
+<p class="empty" id="emptyMsg">Cargando ranking...</p>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <script>
 const firebaseConfig = {
@@ -51,6 +65,34 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+function calcularFinal(data){
+  let auto = 10;
+
+  auto -= (Number(data.menores) || 0) * 0.20;
+  auto -= (Number(data.importantes) || 0) * 0.70;
+  auto -= (Number(data.graves) || 0) * 1.50;
+  auto -= (Number(data.varError) || 0) * 0.70;
+  auto -= (Number(data.gestion) || 0) * 0.50;
+  auto -= (Number(data.amarillaMal) || 0) * 0.30;
+
+  auto += (Number(data.amarillaBien) || 0) * 0.30;
+  auto += (Number(data.rojas) || 0) * 0.70;
+  auto -= (Number(data.rojaMal) || 0) * 1.50;
+  auto += (Number(data.penaltis) || 0) * 0.70;
+  auto += (Number(data.buenvar) || 0) * 0.30;
+  auto += (Number(data.ventajas) || 0) * 0.20;
+  auto += (Number(data.control) || 0) * 0.50;
+  auto += (Number(data.addedGood) || 0) * 0.20;
+  auto -= (Number(data.addedBad) || 0) * 0.20;
+
+  auto = Math.max(0, Math.min(10, auto));
+
+  const personal = Number(data.personal) || 0;
+  const final = personal ? (personal * 0.6 + auto * 0.4) : auto;
+
+  return final;
+}
+
 function indice(media){
   if(media >= 8.5) return ["ELITE","elite"];
   if(media >= 8.0) return ["FIFA","fifa"];
@@ -61,11 +103,34 @@ function indice(media){
 
 function crearRanking(saved){
   const refs = {};
+
   Object.values(saved || {}).forEach(data=>{
+    if(!data) return;
     if(!data.referee) return;
-    const nota = Number(data.final);
-    if(Number.isNaN(nota)) return;
-    if(!refs[data.referee]) refs[data.referee] = {pj:0,suma:0,mejor:0,peor:10};
+
+    const tieneNota =
+      data.notaHTML ||
+      data.personal ||
+      data.menores ||
+      data.importantes ||
+      data.graves ||
+      data.penaltis ||
+      data.rojas ||
+      data.amarillaBien;
+
+    if(!tieneNota) return;
+
+    const nota = calcularFinal(data);
+
+    if(!refs[data.referee]){
+      refs[data.referee] = {
+        pj:0,
+        suma:0,
+        mejor:0,
+        peor:10
+      };
+    }
+
     refs[data.referee].pj++;
     refs[data.referee].suma += nota;
     refs[data.referee].mejor = Math.max(refs[data.referee].mejor, nota);
@@ -74,7 +139,13 @@ function crearRanking(saved){
 
   const ranking = Object.entries(refs).map(([ref,d])=>{
     const media = d.suma / d.pj;
-    return {ref,pj:d.pj,media,mejor:d.mejor,peor:d.peor};
+    return {
+      ref,
+      pj:d.pj,
+      media,
+      mejor:d.mejor,
+      peor:d.peor
+    };
   }).sort((a,b)=>b.media-a.media);
 
   const tbody = document.getElementById("rankingBody");
@@ -82,22 +153,34 @@ function crearRanking(saved){
 
   if(ranking.length === 0){
     tbody.innerHTML = "";
-    empty.textContent = "Todavía no hay árbitros valorados. Asigna árbitro y pulsa Calcular nota en la página principal.";
+    empty.textContent = "Todavía no hay árbitros valorados.";
     return;
   }
 
   empty.textContent = "";
+
   tbody.innerHTML = ranking.map((r,i)=>{
     const [text,cls] = indice(r.media);
-    return `<tr><td>${i+1}</td><td>${r.ref}</td><td>${r.pj}</td><td>${r.media.toFixed(2)}</td><td>${r.mejor.toFixed(1)}</td><td>${r.peor.toFixed(1)}</td><td><span class="badge ${cls}">${text}</span></td></tr>`;
+
+    return `
+    <tr>
+      <td>${i+1}</td>
+      <td>${r.ref}</td>
+      <td>${r.pj}</td>
+      <td>${r.media.toFixed(2)}</td>
+      <td>${r.mejor.toFixed(1)}</td>
+      <td>${r.peor.toFixed(1)}</td>
+      <td><span class="badge ${cls}">${text}</span></td>
+    </tr>
+    `;
   }).join("");
 }
 
 db.ref("matchCenterData").on("value", snapshot=>{
-  crearRanking(snapshot.val() || {});
-}, error=>{
-  document.getElementById("emptyMsg").textContent = "No se pudieron cargar los datos de Firebase.";
+  const data = snapshot.val() || {};
+  crearRanking(data);
 });
 </script>
+
 </body>
 </html>

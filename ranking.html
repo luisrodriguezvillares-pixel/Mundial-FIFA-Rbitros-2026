@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranking Arbitral FIFA 2026</title>
+
+<style>
+body{margin:0;font-family:Arial;background:#0a0f1f;color:white}
+header{background:#111b33;padding:16px;text-align:center;font-weight:900}
+.box{margin:12px;padding:12px;background:#111b33;border-radius:14px;border:1px solid rgba(255,255,255,.08)}
+h2{font-size:16px;margin:0 0 10px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+th{opacity:.7}
+.badge{padding:4px 7px;border-radius:7px;font-size:10px;font-weight:800}
+.elite{background:#facc15;color:#111}
+.fifa{background:#22c55e;color:#111}
+.good{background:#38bdf8;color:#111}
+.ok{background:#94a3b8;color:#111}
+.watch{background:#ef4444;color:white}
+.empty{opacity:.7;font-size:13px}
+</style>
+</head>
+
+<body>
+
+<header>🏆 RANKING ARBITRAL · FIFA WORLD CUP 2026</header>
+
+<div class="box">
+<h2>Clasificación de árbitros</h2>
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Árbitro</th>
+<th>PJ</th>
+<th>Media</th>
+<th>Mejor</th>
+<th>Peor</th>
+<th>Índice</th>
+</tr>
+</thead>
+<tbody id="rankingBody"></tbody>
+</table>
+
+<p class="empty" id="emptyMsg"></p>
+</div>
+
+<script>
+const saved = JSON.parse(localStorage.getItem("matchCenterData") || "{}");
+
+function calcularFinal(data){
+  let auto = 10;
+
+  auto -= (data.menores || 0) * 0.20;
+  auto -= (data.importantes || 0) * 0.70;
+  auto -= (data.graves || 0) * 1.50;
+  auto -= (data.varError || 0) * 0.70;
+  auto -= (data.gestion || 0) * 0.50;
+  auto -= (data.amarillaMal || 0) * 0.30;
+
+  auto += (data.amarillaBien || 0) * 0.30;
+  auto += (data.rojas || 0) * 0.70;
+  auto -= (data.rojaMal || 0) * 1.50;
+  auto += (data.penaltis || 0) * 0.70;
+  auto += (data.buenvar || 0) * 0.30;
+  auto += (data.ventajas || 0) * 0.20;
+  auto += (data.control || 0) * 0.50;
+  auto += (data.addedGood || 0) * 0.20;
+  auto -= (data.addedBad || 0) * 0.20;
+
+  auto = Math.max(0, Math.min(10, auto));
+
+  const personal = Number(data.personal) || 0;
+  return personal ? (personal * 0.6 + auto * 0.4) : auto;
+}
+
+function indice(media){
+  if(media >= 8.5) return ["ELITE","elite"];
+  if(media >= 8.0) return ["FIFA","fifa"];
+  if(media >= 7.5) return ["MUY BIEN","good"];
+  if(media >= 7.0) return ["CORRECTO","ok"];
+  return ["OBSERVACIÓN","watch"];
+}
+
+function crearRanking(){
+  const refs = {};
+
+  Object.values(saved).forEach(data=>{
+    if(!data.referee) return;
+    if(!data.notaHTML && !data.personal) return;
+
+    const nota = calcularFinal(data);
+
+    if(!refs[data.referee]){
+      refs[data.referee] = {
+        pj:0,
+        suma:0,
+        mejor:0,
+        peor:10
+      };
+    }
+
+    refs[data.referee].pj++;
+    refs[data.referee].suma += nota;
+    refs[data.referee].mejor = Math.max(refs[data.referee].mejor, nota);
+    refs[data.referee].peor = Math.min(refs[data.referee].peor, nota);
+  });
+
+  const ranking = Object.entries(refs).map(([ref,d])=>{
+    const media = d.suma / d.pj;
+    return {
+      ref,
+      pj:d.pj,
+      media,
+      mejor:d.mejor,
+      peor:d.peor
+    };
+  }).sort((a,b)=>b.media-a.media);
+
+  const tbody = document.getElementById("rankingBody");
+  const empty = document.getElementById("emptyMsg");
+
+  if(ranking.length === 0){
+    tbody.innerHTML = "";
+    empty.textContent = "Todavía no hay árbitros valorados.";
+    return;
+  }
+
+  empty.textContent = "";
+
+  tbody.innerHTML = ranking.map((r,i)=>{
+    const [text,cls] = indice(r.media);
+
+    return `
+    <tr>
+      <td>${i+1}</td>
+      <td>${r.ref}</td>
+      <td>${r.pj}</td>
+      <td>${r.media.toFixed(2)}</td>
+      <td>${r.mejor.toFixed(1)}</td>
+      <td>${r.peor.toFixed(1)}</td>
+      <td><span class="badge ${cls}">${text}</span></td>
+    </tr>
+    `;
+  }).join("");
+}
+
+crearRanking();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estadísticas API · Árbitros Mundial 2026</title>
+
+<style>
+body{margin:0;font-family:Arial;background:#0a0f1f;color:white}
+header{background:#111b33;padding:16px;text-align:center;font-weight:900}
+.box{margin:12px;padding:12px;background:#111b33;border-radius:14px;border:1px solid rgba(255,255,255,.08)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.card{background:#0b1220;border-radius:12px;padding:12px;text-align:center}
+.card b{font-size:22px;color:#93c5fd}
+.card span{display:block;font-size:11px;opacity:.7;margin-top:4px}
+select,button{width:100%;padding:9px;border-radius:8px;border:none;background:#0b1220;color:white;margin-top:8px}
+button{background:#2563eb;font-weight:800;cursor:pointer}
+canvas{margin-top:10px;background:#0b1220;border-radius:12px;padding:10px}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+th{opacity:.7}
+.small{font-size:11px;opacity:.65;line-height:1.4}
+.warn{color:#facc15}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+
+<body>
+
+<header>📊 ESTADÍSTICAS REALES · ÁRBITROS MUNDIAL 2026</header>
+
+<div class="box">
+<p class="small">
+Esta página usa tus designaciones guardadas en Firebase y busca datos reales en API-Football.
+Si el Mundial todavía no tiene estadísticas cargadas, algunos valores saldrán a 0.
+</p>
+<button onclick="loadEverything()">Actualizar estadísticas</button>
+</div>
+
+<div class="box">
+<label>Filtrar por árbitro</label>
+<select id="refFilter">
+<option value="all">Todos los árbitros</option>
+</select>
+</div>
+
+<div class="box">
+<div class="grid">
+<div class="card"><b id="pj">0</b><span>Partidos designados</span></div>
+<div class="card"><b id="faltas">0</b><span>Faltas</span></div>
+<div class="card"><b id="amarillas">0</b><span>Amarillas</span></div>
+<div class="card"><b id="rojas">0</b><span>Rojas</span></div>
+<div class="card"><b id="penaltis">0</b><span>Penaltis</span></div>
+<div class="card"><b id="offsides">0</b><span>Fueras de juego</span></div>
+<div class="card"><b id="corners">0</b><span>Córners</span></div>
+<div class="card"><b id="var">N/D</b><span>VAR</span></div>
+</div>
+</div>
+
+<div class="box">
+<h3>Comparativa por acción</h3>
+<select id="metricFilter">
+<option value="yellow">Amarillas</option>
+<option value="red">Rojas</option>
+<option value="fouls">Faltas</option>
+<option value="offsides">Fueras de juego</option>
+<option value="penalties">Penaltis</option>
+<option value="corners">Córners</option>
+</select>
+<canvas id="mainChart"></canvas>
+</div>
+
+<div class="box">
+<h3>Resumen por árbitro</h3>
+<table>
+<thead>
+<tr>
+<th>Árbitro</th>
+<th>PJ</th>
+<th>Faltas</th>
+<th>Amarillas</th>
+<th>Rojas</th>
+<th>Penaltis</th>
+<th>Offsides</th>
+<th>Córners</th>
+</tr>
+</thead>
+<tbody id="tableBody">
+<tr><td colspan="8">Pulsa “Actualizar estadísticas”.</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box">
+<h3>Estado</h3>
+<p class="small" id="status">Preparado.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script>
+
+<script>
+/* =========================
+   CONFIGURACIÓN
+========================= */
+
+const API_KEY = "b46b07708dddfa6ee9ce9dc24b66a9d3
+";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAVCqC9XrDivMUCwjR-qAz97XHkBkF2Lf4",
+  authDomain: "mundial-fifa-arbitros-2026.firebaseapp.com",
+  databaseURL: "https://mundial-fifa-arbitros-2026-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mundial-fifa-arbitros-2026",
+  storageBucket: "mundial-fifa-arbitros-2026.firebasestorage.app",
+  messagingSenderId: "915513430296",
+  appId: "1:915513430296:web:6f3f4400e9b6e3dfb08e6d"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* Mundial 2026 en API-Football */
+const WORLD_CUP_LEAGUE = 1;
+const WORLD_CUP_SEASON = 2026;
+
+/* Tus partidos, mismo orden que index.html */
+const localMatches=[
+["México","Sudáfrica"],
+["República de Corea","Chequia"],
+["Canadá","Bosnia y Herzegovina"],
+["EE. UU.","Paraguay"],
+["Catar","Suiza"],
+["Brasil","Marruecos"],
+["Haití","Escocia"],
+["Australia","Turquía"],
+["Alemania","Curazao"],
+["Países Bajos","Japón"],
+["Costa de Marfil","Ecuador"],
+["Suecia","Túnez"],
+["España","Islas de Cabo Verde"],
+["Bélgica","Egipto"],
+["Arabia Saudí","Uruguay"],
+["RI de Irán","Nueva Zelanda"],
+["Francia","Senegal"],
+["Irak","Noruega"],
+["Argentina","Argelia"],
+["Austria","Jordania"],
+["Portugal","RD Congo"],
+["Inglaterra","Croacia"],
+["Ghana","Panamá"],
+["Uzbekistán","Colombia"],
+["Chequia","Sudáfrica"],
+["Suiza","Bosnia y Herzegovina"],
+["Canadá","Catar"],
+["México","República de Corea"],
+["EE. UU.","Australia"],
+["Escocia","Marruecos"],
+["Brasil","Haití"],
+["Turquía","Paraguay"],
+["Países Bajos","Suecia"],
+["Alemania","Costa de Marfil"],
+["Ecuador","Curazao"],
+["Túnez","Japón"],
+["España","Arabia Saudí"],
+["Bélgica","RI de Irán"],
+["Uruguay","Islas de Cabo Verde"],
+["Nueva Zelanda","Egipto"],
+["Argentina","Austria"],
+["Francia","Irak"],
+["Noruega","Senegal"],
+["Jordania","Argelia"],
+["Portugal","Uzbekistán"],
+["Inglaterra","Ghana"],
+["Panamá","Croacia"],
+["Colombia","RD Congo"],
+["Suiza","Canadá"],
+["Bosnia y Herzegovina","Catar"],
+["Escocia","Brasil"],
+["Marruecos","Haití"],
+["Chequia","México"],
+["Sudáfrica","República de Corea"],
+["Curazao","Costa de Marfil"],
+["Ecuador","Alemania"],
+["Japón","Suecia"],
+["Túnez","Países Bajos"],
+["Turquía","EE. UU."],
+["Paraguay","Australia"],
+["Noruega","Francia"],
+["Senegal","Irak"],
+["Islas de Cabo Verde","Arabia Saudí"],
+["Uruguay","España"],
+["Egipto","RI de Irán"],
+["Nueva Zelanda","Bélgica"],
+["Panamá","Inglaterra"],
+["Croacia","Ghana"],
+["Colombia","Portugal"],
+["RD Congo","Uzbekistán"],
+["Argelia","Austria"],
+["Jordania","Argentina"]
+];
+
+let designations = {};
+let fixtures = [];
+let refereeStats = {};
+let chart;
+
+/* =========================
+   UTILIDADES
+========================= */
+
+function cleanName(name){
+  return String(name||"")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace("ee. uu.","usa")
+    .replace("estados unidos","usa")
+    .replace("republica de corea","south korea")
+    .replace("paises bajos","netherlands")
+    .replace("arabia saudi","saudi arabia")
+    .replace("ri de iran","iran")
+    .replace("nueva zelanda","new zealand")
+    .replace("costa de marfil","ivory coast")
+    .replace("islas de cabo verde","cape verde")
+    .replace("rd congo","dr congo")
+    .replace("chequia","czech republic")
+    .replace("curazao","curacao")
+    .trim();
+}
+
+function sameTeam(a,b){
+  const x=cleanName(a);
+  const y=cleanName(b);
+  return x===y || x.includes(y) || y.includes(x);
+}
+
+async function api(path){
+  const res = await fetch("https://v3.football.api-sports.io/" + path, {
+    method:"GET",
+    headers:{
+      "x-apisports-key":API_KEY
+    }
+  });
+
+  if(!res.ok){
+    throw new Error("Error API " + res.status);
+  }
+
+  const json = await res.json();
+  return json.response || [];
+}
+
+function getStat(statsArray, names){
+  let total=0;
+
+  (statsArray||[]).forEach(team=>{
+    (team.statistics||[]).forEach(s=>{
+      const type=String(s.type||"").toLowerCase();
+      const value = Number(s.value)||0;
+
+      if(names.some(n=>type.includes(n))){
+        total += value;
+      }
+    });
+  });
+
+  return total;
+}
+
+function getCardsFromEvents(events){
+  let yellow=0;
+  let red=0;
+  let penalties=0;
+
+  (events||[]).forEach(e=>{
+    const type=String(e.type||"").toLowerCase();
+    const detail=String(e.detail||"").toLowerCase();
+
+    if(type.includes("card") && detail.includes("yellow")) yellow++;
+    if(type.includes("card") && detail.includes("red")) red++;
+    if(type.includes("penalty")) penalties++;
+    if(detail.includes("penalty")) penalties++;
+  });
+
+  return {yellow,red,penalties};
+}
+
+function emptyStats(){
+  return {
+    pj:0,
+    fouls:0,
+    yellow:0,
+    red:0,
+    penalties:0,
+    offsides:0,
+    corners:0
+  };
+}
+
+/* =========================
+   CARGA PRINCIPAL
+========================= */
+
+async function loadEverything(){
+  document.getElementById("status").textContent="Cargando designaciones desde Firebase...";
+
+  const snap = await db.ref("matchCenterData").once("value");
+  designations = snap.val() || {};
+
+  document.getElementById("status").textContent="Cargando calendario del Mundial desde API-Football...";
+
+  fixtures = await api(`fixtures?league=${WORLD_CUP_LEAGUE}&season=${WORLD_CUP_SEASON}`);
+
+  document.getElementById("status").textContent="Calculando estadísticas por árbitro...";
+
+  refereeStats = {};
+
+  const assignedIndexes = Object.keys(designations).filter(i=>designations[i] && designations[i].referee);
+
+  for(const i of assignedIndexes){
+    const idx = Number(i);
+    const ref = designations[i].referee;
+    const match = localMatches[idx];
+
+    if(!match) continue;
+
+    const [homeLocal, awayLocal] = match;
+
+    const fixture = fixtures.find(f=>{
+      return (
+        sameTeam(f.teams?.home?.name, homeLocal) &&
+        sameTeam(f.teams?.away?.name, awayLocal)
+      ) || (
+        sameTeam(f.teams?.home?.name, awayLocal) &&
+        sameTeam(f.teams?.away?.name, homeLocal)
+      );
+    });
+
+    if(!refereeStats[ref]) refereeStats[ref]=emptyStats();
+    refereeStats[ref].pj++;
+
+    if(!fixture){
+      console.warn("No encontrado en API:", homeLocal, awayLocal);
+      continue;
+    }
+
+    const fixtureId = fixture.fixture.id;
+
+    let statistics=[];
+    let events=[];
+
+    try{
+      statistics = await api(`fixtures/statistics?fixture=${fixtureId}`);
+      events = await api(`fixtures/events?fixture=${fixtureId}`);
+    }catch(e){
+      console.warn("Sin estadísticas todavía para fixture", fixtureId);
+    }
+
+    const cards = getCardsFromEvents(events);
+
+    refereeStats[ref].yellow += cards.yellow;
+    refereeStats[ref].red += cards.red;
+    refereeStats[ref].penalties += cards.penalties;
+
+    refereeStats[ref].fouls += getStat(statistics,["fouls"]);
+    refereeStats[ref].offsides += getStat(statistics,["offsides"]);
+    refereeStats[ref].corners += getStat(statistics,["corner"]);
+  }
+
+  updateFilter();
+  render();
+
+  document.getElementById("status").innerHTML =
+    "Actualizado. Si un partido todavía no terminó o la API no cargó estadísticas, saldrá con 0 en algunas columnas.";
+}
+
+/* =========================
+   RENDER
+========================= */
+
+function updateFilter(){
+  const select=document.getElementById("refFilter");
+  const current=select.value;
+
+  const refs=Object.keys(refereeStats).sort();
+
+  select.innerHTML='<option value="all">Todos los árbitros</option>' +
+    refs.map(r=>`<option value="${r}">${r}</option>`).join("");
+
+  select.value=refs.includes(current)?current:"all";
+}
+
+function getFilteredRefs(){
+  const filter=document.getElementById("refFilter").value;
+
+  if(filter==="all"){
+    return Object.entries(refereeStats);
+  }
+
+  return Object.entries(refereeStats).filter(([ref])=>ref===filter);
+}
+
+function render(){
+  const entries=getFilteredRefs();
+
+  let total=emptyStats();
+
+  entries.forEach(([ref,d])=>{
+    total.pj += d.pj;
+    total.fouls += d.fouls;
+    total.yellow += d.yellow;
+    total.red += d.red;
+    total.penalties += d.penalties;
+    total.offsides += d.offsides;
+    total.corners += d.corners;
+  });
+
+  document.getElementById("pj").textContent=total.pj;
+  document.getElementById("faltas").textContent=total.fouls;
+  document.getElementById("amarillas").textContent=total.yellow;
+  document.getElementById("rojas").textContent=total.red;
+  document.getElementById("penaltis").textContent=total.penalties;
+  document.getElementById("offsides").textContent=total.offsides;
+  document.getElementById("corners").textContent=total.corners;
+  document.getElementById("var").textContent="N/D";
+
+  renderChart();
+  renderTable(entries);
+}
+
+function renderChart(){
+  const metric=document.getElementById("metricFilter").value;
+
+  const labels=Object.keys(refereeStats);
+  const data=labels.map(ref=>refereeStats[ref][metric]||0);
+
+  if(chart){chart.destroy();}
+
+  chart=new Chart(document.getElementById("mainChart"),{
+    type:"bar",
+    data:{
+      labels,
+      datasets:[{
+        label:metric,
+        data
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:"white"},grid:{color:"rgba(255,255,255,.08)"}},
+        y:{ticks:{color:"white",precision:0},grid:{color:"rgba(255,255,255,.08)"}}
+      }
+    }
+  });
+}
+
+function renderTable(entries){
+  const arr=entries.sort((a,b)=>b[1].pj-a[1].pj);
+
+  document.getElementById("tableBody").innerHTML = arr.length
+    ? arr.map(([ref,d])=>`
+      <tr>
+        <td>${ref}</td>
+        <td>${d.pj}</td>
+        <td>${d.fouls}</td>
+        <td>${d.yellow}</td>
+        <td>${d.red}</td>
+        <td>${d.penalties}</td>
+        <td>${d.offsides}</td>
+        <td>${d.corners}</td>
+      </tr>
+    `).join("")
+    : `<tr><td colspan="8">No hay designaciones guardadas todavía.</td></tr>`;
+}
+
+document.getElementById("refFilter").addEventListener("change",render);
+document.getElementById("metricFilter").addEventListener("change",renderChart);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAF - Árbitros</title>
+
+<style>
+body{font-family:Arial;background:#f4f4f4;margin:0}
+header{background:#ff0000;color:white;padding:30px;text-align:center}
+.container{width:90%;margin:auto;padding:20px}
+.card{background:white;border-radius:16px;padding:25px;margin-bottom:25px;display:flex;gap:25px;align-items:center}
+.photo{width:180px;height:220px;border-radius:12px;object-fit:cover;background:#ddd}
+.info h2{margin:0}
+.conf{font-weight:bold;color:#ff0000}
+@media(max-width:700px){.card{flex-direction:column;text-align:center}.photo{width:220px;height:270px}}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>FIFA WORLD CUP 2026™</h1>
+<h3 id="subtitle"></h3>
+</header>
+
+<div class="container" id="container"></div>
+
+<script>
+const referees = [
+["ARTAN Omar Abdulkadir","Somalia",34,2018,"Artan_Omar_Abdulkadir.jpeg"],
+["ATCHO Pierre","Gabón",33,2018,"Atcho_Pierre.jpeg"],
+["BEIDA Dahane","Mauritania",34,2018,"Beida_Dahane.jpeg"],
+["GHORBAL Mustapha","Argelia",41,2014,"Ghorbal_Mustapha.jpeg"],
+["JAYED Jalal","Marruecos",39,2019,"Jayed_Jalal.jpeg"],
+["MOHAMED Amin","Egipto",40,2017,"Mohamed_Amin.jpeg"],
+["TOM Abongile","Sudáfrica",34,2020,"Tom_Abongile.jpeg"]
+];
+
+document.getElementById("subtitle").textContent = `${referees.length} Árbitros - CAF`;
+
+const container=document.getElementById("container");
+
+referees.forEach(r=>{
+const card=document.createElement("div");
+card.className="card";
+card.innerHTML=`
+<img class="photo" src="img-arbitros/${r[4]}" alt="${r[0]}">
+<div class="info">
+<h2>${r[0]}</h2>
+<p class="conf">CAF</p>
+<p><strong>País:</strong> ${r[1]}</p>
+<p><strong>Edad:</strong> ${r[2]} años</p>
+<p><strong>FIFA desde:</strong> ${r[3]}</p>
+</div>
+`;
+container.appendChild(card);
+});
+</script>
+
+</body>
+</html>

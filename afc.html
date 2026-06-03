@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFC - Árbitros</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f4f4f4;
+margin:0;
+}
+
+header{
+background:#ff9900;
+color:white;
+padding:30px;
+text-align:center;
+}
+
+.container{
+width:90%;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:white;
+border-radius:16px;
+padding:25px;
+margin-bottom:25px;
+display:flex;
+gap:25px;
+align-items:center;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.photo{
+width:180px;
+height:220px;
+border-radius:12px;
+object-fit:cover;
+background:#ddd;
+}
+
+.info h2{
+margin:0;
+}
+
+.conf{
+font-weight:bold;
+color:#ff9900;
+}
+
+@media(max-width:700px){
+.card{
+flex-direction:column;
+text-align:center;
+}
+
+.photo{
+width:220px;
+height:270px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>FIFA WORLD CUP 2026™</h1>
+<h3 id="subtitle"></h3>
+</header>
+
+<div class="container" id="container"></div>
+
+<script>
+
+const referees = [
+["FAGHANI Alireza","Australia",48,2008,"Faghani_Alireza.jpeg"],
+["MA Ning","China",45,2011,"Ma_Ning.jpeg"],
+["ARAKI Yusuke","Japón",43,2017,"Araki_Yusuke.jpeg"],
+["AL JASSIM Abdulrahman","Qatar",39,2013,"Al_Jassim_Abdulrahman.jpeg"],
+["TANTASHEV Ilgiz","Uzbekistán",40,2021,"Tantashev_Ali.jpeg"],
+["MAKHADMEH Adham","Jordania",38,2013,"Makhadmeh_Adham.jpeg"],
+["OMAR AL ALI","Emiratos Árabes Unidos",38,2020,"Omar_Al_Ali.jpeg"],
+["AL TURAIS Khalid","Arabia Saudí",39,2016,"Al_Turais_Khalid.jpeg"]
+];
+
+document.getElementById("subtitle").textContent =
+`${referees.length} Árbitros - AFC`;
+
+const container = document.getElementById("container");
+
+referees.forEach(r=>{
+
+const card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=`
+<img class="photo" src="${r[4]}" alt="${r[0]}">
+
+<div class="info">
+<h2>${r[0]}</h2>
+<p class="conf">AFC</p>
+<p><strong>País:</strong> ${r[1]}</p>
+<p><strong>Edad:</strong> ${r[2]} años</p>
+<p><strong>FIFA desde:</strong> ${r[3]}</p>
+</div>
+`;
+
+container.appendChild(card);
+
+});
+
+</script>
+
+</body>
+</html>

@@ -32,18 +32,20 @@ const referees = [
 ["ATCHO Pierre","Gabón",33,2018,"Atcho_Pierre.jpeg"],
 ["BEIDA Dahane","Mauritania",34,2018,"Beida_Dahane.jpeg"],
 ["GHORBAL Mustapha","Argelia",41,2014,"Ghorbal_Mustapha.jpeg"],
-["JAYED Jalal","Marruecos",39,2019,"Jayed_Jalal.jpeg"],
+["JAYED Jalal","Marruecos",39,2019,"Jayed_Jalal.png"],
 ["MOHAMED Amin","Egipto",40,2017,"Mohamed_Amin.jpeg"],
 ["TOM Abongile","Sudáfrica",34,2020,"Tom_Abongile.jpeg"]
 ];
 
-document.getElementById("subtitle").textContent = `${referees.length} Árbitros - CAF`;
+document.getElementById("subtitle").textContent =
+`${referees.length} Árbitros - CAF`;
 
 const container=document.getElementById("container");
 
 referees.forEach(r=>{
 const card=document.createElement("div");
 card.className="card";
+
 card.innerHTML=`
 <img class="photo" src="${r[4]}" alt="${r[0]}">
 <div class="info">
@@ -54,6 +56,7 @@ card.innerHTML=`
 <p><strong>FIFA desde:</strong> ${r[3]}</p>
 </div>
 `;
+
 container.appendChild(card);
 });
 </script>

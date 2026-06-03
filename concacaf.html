@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONCACAF - Árbitros</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f4f4f4;
+margin:0;
+}
+
+header{
+background:#38761d;
+color:white;
+padding:30px;
+text-align:center;
+}
+
+.container{
+width:90%;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:white;
+border-radius:16px;
+padding:25px;
+margin-bottom:25px;
+display:flex;
+gap:25px;
+align-items:center;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.photo{
+width:180px;
+height:220px;
+border-radius:12px;
+object-fit:cover;
+background:#ddd;
+}
+
+.info h2{
+margin:0;
+}
+
+.conf{
+font-weight:bold;
+color:#38761d;
+}
+
+@media(max-width:700px){
+.card{
+flex-direction:column;
+text-align:center;
+}
+
+.photo{
+width:220px;
+height:270px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>FIFA WORLD CUP 2026™</h1>
+<h3 id="subtitle"></h3>
+</header>
+
+<div class="container" id="container"></div>
+
+<script>
+
+const referees = [
+["BARTON Ivan","El Salvador",34,2018,"Barton_Ivan.jpeg"],
+["CALDERON Juan","Costa Rica",36,2019,"Calderon_Juan.jpeg"],
+["ELFATH Ismail","Estados Unidos",42,2016,"Elfath_Ismail.jpeg"],
+["FISCHER Drew","Canadá",44,2015,"Fischer_Drew.jpeg"],
+["GARCIA Katia","México",32,2019,"Garcia_Katia.jpeg"],
+["MARTINEZ Hector Said","Honduras",36,2017,"Martinez_Hector_Said.jpeg"],
+["NATION Oshane","Jamaica",36,2019,"Nation_Oshane.jpeg"],
+["PENSO Tori","Estados Unidos",38,2021,"Penso_Tori.jpeg"],
+["RAMOS Cesar","México",43,2014,"Ramos_Cesar.jpeg"]
+];
+
+document.getElementById("subtitle").textContent =
+`${referees.length} Árbitros - CONCACAF`;
+
+const container = document.getElementById("container");
+
+referees.forEach(r=>{
+
+const card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=`
+<img class="photo" src="${r[4]}" alt="${r[0]}">
+
+<div class="info">
+<h2>${r[0]}</h2>
+<p class="conf">CONCACAF</p>
+<p><strong>País:</strong> ${r[1]}</p>
+<p><strong>Edad:</strong> ${r[2]} años</p>
+<p><strong>FIFA desde:</strong> ${r[3]}</p>
+</div>
+`;
+
+container.appendChild(card);
+
+});
+
+</script>
+
+</body>
+</html>

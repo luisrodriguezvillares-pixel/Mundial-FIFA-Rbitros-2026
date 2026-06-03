@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UEFA - Árbitros</title>
+
+<style>
+body{font-family:Arial;background:#f4f4f4;margin:0}
+
+header{
+  background:#1d4ed8;
+  color:#ffffff;
+  padding:30px;
+  text-align:center;
+}
+
+.container{width:90%;margin:auto;padding:20px}
+
+.card{
+  background:#ffffff;
+  border-radius:16px;
+  padding:25px;
+  margin-bottom:25px;
+  display:flex;
+  gap:25px;
+  align-items:center;
+}
+
+.photo{
+  width:180px;
+  height:220px;
+  border-radius:12px;
+  object-fit:cover;
+  background:#ddd;
+}
+
+.info h2{margin:0}
+
+.conf{
+  font-weight:bold;
+  color:#1d4ed8;
+}
+
+@media(max-width:700px){
+.card{
+flex-direction:column;
+text-align:center;
+}
+.photo{
+width:220px;
+height:270px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>FIFA WORLD CUP 2026™</h1>
+<h3 id="subtitle"></h3>
+</header>
+
+<div class="container" id="container"></div>
+
+<script>
+
+const referees = [
+["ESKAS Espen","Noruega",38,2017,"Eskas_Espen.jpeg"],
+["HERNANDEZ Alejandro","España",44,2014,"Hernandez_Alejandro.jpeg"],
+["KOVACS Istvan","Rumanía",42,2010,"Kovacs_Istvan.jpeg"],
+["LETEXIER Francois","Francia",37,2017,"Letexier_Francois.jpeg"],
+["MAKKELIE Danny","Países Bajos",43,2011,"Makkelie_Danny.jpeg"],
+["MARCINIAK Szymon","Polonia",45,2011,"Marciniak_Szymon.jpeg"],
+["MARIANI Maurizio","Italia",44,2019,"Mariani_Maurizio.jpeg"],
+["NYBERG Glenn","Suecia",38,2016,"Nyberg_Glenn.jpeg"],
+["OLIVER Michael","Inglaterra",41,2012,"Oliver_Michael.jpeg"],
+["PINHEIRO Joao","Portugal",38,2016,"Pinheiro_Joao.jpeg"],
+["SCHÄRER Sandro","Suiza",38,2015,"Scharer_Sandro.jpeg"],
+["TAYLOR Anthony","Inglaterra",48,2013,"Taylor_Anthony.jpeg"],
+["TURPIN Clement","Francia",44,2010,"Turpin_Clement.jpeg"],
+["VINCIC Slavko","Eslovenia",47,2010,"Vincic_Slavko.jpeg"],
+["ZWAYER Felix","Alemania",45,2012,"Zwayer_Felix.jpeg"]
+];
+
+document.getElementById("subtitle").textContent =
+`${referees.length} Árbitros - UEFA`;
+
+const container=document.getElementById("container");
+
+referees.forEach(r=>{
+const card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=`
+<img class="photo" src="${r[4]}" alt="${r[0]}">
+
+<div class="info">
+<h2>${r[0]}</h2>
+<p class="conf">UEFA</p>
+<p><strong>País:</strong> ${r[1]}</p>
+<p><strong>Edad:</strong> ${r[2]} años</p>
+<p><strong>FIFA desde:</strong> ${r[3]}</p>
+</div>
+`;
+
+container.appendChild(card);
+});
+
+</script>
+
+</body>
+</html>

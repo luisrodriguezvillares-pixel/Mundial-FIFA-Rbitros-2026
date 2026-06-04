@@ -36,7 +36,19 @@ header{
   background:#1e293b;
   color:white;
 }
+#resetBtn{
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#dc2626;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+}
 
+#resetBtn:hover{
+  background:#b91c1c;
+}
 .container{
   width:90%;
   margin:auto;
@@ -167,6 +179,7 @@ header{
 </header>
 
 <div class="filters">
+
 <input id="search" placeholder="Buscar árbitro..." oninput="applyFilters()">
 
 <select id="confFilter" onchange="applyFilters()">
@@ -182,6 +195,11 @@ header{
 <select id="countryFilter" onchange="applyFilters()">
   <option value="ALL">Todos los países</option>
 </select>
+
+<button id="resetBtn" onclick="resetFilters()">
+Eliminar filtros
+</button>
+
 </div>
 
 <div class="container" id="container"></div>
@@ -323,7 +341,15 @@ overlay.addEventListener("click", function(e){
     closeCard();
   }
 });
+function resetFilters(){
 
+  document.getElementById("search").value = "";
+  document.getElementById("confFilter").value = "ALL";
+  document.getElementById("countryFilter").value = "ALL";
+
+  render(referees);
+
+}
 loadCountries();
 render(referees);
 </script>

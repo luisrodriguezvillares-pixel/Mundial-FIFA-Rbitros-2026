@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIFA 2026 - Árbitros</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0f172a;
+  color:white;
+}
+
+header{
+  background:#111827;
+  padding:30px;
+  text-align:center;
+}
+
+.filters{
+  background:#111827;
+  padding:20px;
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.filters input,
+.filters select{
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#1e293b;
+  color:white;
+}
+
+.container{
+  width:90%;
+  margin:auto;
+  padding:25px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:18px;
+}
+
+.card{
+  background:#1e293b;
+  border-radius:16px;
+  padding:14px;
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,0.15);
+  transition:0.2s;
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  border:1px solid rgba(255,255,255,0.35);
+}
+
+.cardPhoto{
+  width:90px;
+  height:115px;
+  object-fit:cover;
+  border-radius:12px;
+  background:#334155;
+  flex-shrink:0;
+}
+
+.card h3{
+  margin:0 0 6px 0;
+  font-size:17px;
+}
+
+.card p{
+  margin:4px 0;
+  font-size:13px;
+  opacity:.85;
+}
+
+.badge{
+  display:inline-block;
+  margin-top:6px;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:bold;
+}
+
+.badge.UEFA{background:#1d4ed8;}
+.badge.CONMEBOL{background:#d4af37;color:#111;}
+.badge.CONCACAF{background:#38761d;}
+.badge.CAF{background:#ff0000;}
+.badge.AFC{background:#ff9900;color:#111;}
+.badge.OFC{background:#000;}
+
+.overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.75);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+
+.bigCard{
+  width:420px;
+  max-width:90%;
+  background:white;
+  color:black;
+  border-radius:18px;
+  padding:25px;
+  position:relative;
+  text-align:center;
+}
+
+.bigCard.UEFA{border:4px solid #1d4ed8;}
+.bigCard.CONMEBOL{border:4px solid #d4af37;}
+.bigCard.CONCACAF{border:4px solid #38761d;}
+.bigCard.CAF{border:4px solid #ff0000;}
+.bigCard.AFC{border:4px solid #ff9900;}
+.bigCard.OFC{border:4px solid #000;}
+
+.modalPhoto{
+  width:180px;
+  height:220px;
+  object-fit:cover;
+  border-radius:14px;
+  margin-bottom:15px;
+  background:#ddd;
+}
+
+.close{
+  position:absolute;
+  top:10px;
+  right:15px;
+  font-size:26px;
+  cursor:pointer;
+}
+
+.conf{
+  font-weight:bold;
+}
+
+@media(max-width:700px){
+  .container{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>FIFA WORLD CUP 2026™</h1>
+<h3>Árbitros principales</h3>
+</header>
+
+<div class="filters">
+<input id="search" placeholder="Buscar árbitro..." oninput="applyFilters()">
+
+<select id="confFilter" onchange="applyFilters()">
+  <option value="ALL">Todas las confederaciones</option>
+  <option value="UEFA">UEFA</option>
+  <option value="CONMEBOL">CONMEBOL</option>
+  <option value="CONCACAF">CONCACAF</option>
+  <option value="CAF">CAF</option>
+  <option value="AFC">AFC</option>
+  <option value="OFC">OFC</option>
+</select>
+
+<select id="countryFilter" onchange="applyFilters()">
+  <option value="ALL">Todos los países</option>
+</select>
+</div>
+
+<div class="container" id="container"></div>
+<div class="overlay" id="overlay"></div>
+
+<script>
+const referees = [
+["ESKAS Espen","Noruega","UEFA",38,2017,"Eskas_Espen.jpeg"],
+["HERNANDEZ Alejandro","España","UEFA",44,2014,"Hernandez_Alejandro.jpeg"],
+["KOVACS Istvan","Rumanía","UEFA",42,2010,"Kovacs_Istvan.jpeg"],
+["LETEXIER Francois","Francia","UEFA",37,2017,"Letexier_Francois.jpeg"],
+["MAKKELIE Danny","Países Bajos","UEFA",43,2011,"Makkelie_Danny.jpeg"],
+["MARCINIAK Szymon","Polonia","UEFA",45,2011,"Marciniak_Szymon.jpeg"],
+["MARIANI Maurizio","Italia","UEFA",44,2019,"Mariani_Maurizio.jpeg"],
+["NYBERG Glenn","Suecia","UEFA",38,2016,"Nyberg_Glenn.jpeg"],
+["OLIVER Michael","Inglaterra","UEFA",41,2012,"Oliver_Michael.jpeg"],
+["PINHEIRO Joao","Portugal","UEFA",38,2016,"Pinheiro_Joao.jpeg"],
+["SCHARER Sandro","Suiza","UEFA",38,2015,"Scharer_Sandro.jpeg"],
+["TAYLOR Anthony","Inglaterra","UEFA",48,2013,"Taylor_Anthony.jpeg"],
+["TURPIN Clement","Francia","UEFA",44,2010,"Turpin_Clement.jpeg"],
+["VINCIC Slavko","Eslovenia","UEFA",47,2010,"Vincic_Slavko.jpeg"],
+["ZWAYER Felix","Alemania","UEFA",45,2012,"Zwayer_Felix.jpeg"],
+
+["BENITEZ Juan Gabriel","Paraguay","CONMEBOL",42,2010,"Benitez_Juan_Gabriel.jpeg"],
+["CLAUS Raphael","Brasil","CONMEBOL",45,2015,"Claus_Raphael.jpeg"],
+["FALCON PEREZ Yael","Argentina","CONMEBOL",37,2019,"Falcon_Perez_Yael.jpeg"],
+["GARAY Cristian","Chile","CONMEBOL",35,2019,"Garay_Christian.jpeg"],
+["HERRERA Dario","Argentina","CONMEBOL",40,2015,"Herrera_Dario.jpeg"],
+["ORTEGA Kevin","Perú","CONMEBOL",33,2019,"Ortega_Kevin.jpeg"],
+["RAMON ABATTI","Brasil","CONMEBOL",35,2021,"Abatti_Ramon_Abel.jpeg"],
+["ROJAS Andres","Colombia","CONMEBOL",41,2017,"Rojas_Andres.jpeg"],
+["TEJERA Gustavo","Uruguay","CONMEBOL",37,2018,"Tejera_Gustavo.jpeg"],
+["TELLO Facundo","Argentina","CONMEBOL",43,2019,"Tello_Facundo.jpeg"],
+["VALENZUELA Jesus","Venezuela","CONMEBOL",41,2013,"Valenzuela_Jesus.jpeg"],
+["WILTON SAMPAIO","Brasil","CONMEBOL",43,2013,"Sampaio_Wilton.jpeg"],
+
+["BARTON Ivan","El Salvador","CONCACAF",34,2018,"Barton_Ivan.jpeg"],
+["CALDERON Juan","Costa Rica", "CONCACAF",36,2019,"Calderon_Juan.jpeg"],
+["ELFATH Ismail","Estados Unidos","CONCACAF",42,2016,"Elfath_Ismail.jpeg"],
+["FISCHER Drew","Canadá","CONCACAF",44,2015,"Fischer_Drew.jpeg"],
+["GARCIA Katia","México","CONCACAF",32,2019,"Garcia_Katia.jpeg"],
+["MARTINEZ Hector Said","Honduras","CONCACAF",36,2017,"Martinez_Hector_Said.jpeg"],
+["NATION Oshane","Jamaica","CONCACAF",36,2019,"Nation_Oshane.jpeg"],
+["PENSO Tori","Estados Unidos","CONCACAF",38,2021,"Penso_Tori.jpeg"],
+["RAMOS Cesar","México","CONCACAF",43,2014,"Ramos_Cesar.jpeg"],
+
+["ARTAN Omar Abdulkadir","Somalia","CAF",34,2018,"Artan_Omar_Abdulkadir.jpeg"],
+["ATCHO Pierre","Gabón","CAF",33,2018,"Atcho_Pierre.jpeg"],
+["BEIDA Dahane","Mauritania","CAF",34,2018,"Beida_Dahane.jpeg"],
+["GHORBAL Mustapha","Argelia","CAF",41,2014,"Ghorbal_Mustapha.jpeg"],
+["JAYED Jalal","Marruecos","CAF",39,2019,"Jayed_Jalal.png"],
+["MOHAMED Amin","Egipto","CAF",40,2017,"Mohamed_Amin.jpeg"],
+["TOM Abongile","Sudáfrica","CAF",34,2020,"Tom_Abongile.jpeg"],
+
+["AL JASSIM Abdulrahman","Catar","AFC",38,2013,"Al_Jassim_Abdulrahman.jpeg"],
+["AL TURAIS Khalid","Arabia Saudí","AFC",39,2016,"Al_Turais_Khalid.jpeg"],
+["ARAKI Yusuke","Japón","AFC",40,2017,"Araki_Yusuke.jpeg"],
+["FAGHANI Alireza","Australia","AFC",48,2008,"Faghani_Alireza.jpeg"],
+["MA Ning","China","AFC",46,2011,"Ma_Ning.jpeg"],
+["MAKHADMEH Adham","Jordania","AFC",39,2013,"Makhadmeh_Adham.jpeg"],
+["OMAR AL ALI","Emiratos Árabes Unidos","AFC",38,2015,"Omar_Al_Ali.jpeg"],
+["TANTASHEV Ilgiz","Uzbekistán","AFC",42,2013,"Tantashev_Ali.jpeg"],
+
+["KAWANA-WAUGH Campbell-Kirk","Nueva Zelanda","OFC",46,2018,"KAWANA-WAUGH_Campbell-Kirk.jpeg"]
+];
+
+const container = document.getElementById("container");
+const overlay = document.getElementById("overlay");
+const countrySelect = document.getElementById("countryFilter");
+
+function loadCountries(){
+  const countries = [...new Set(referees.map(r=>r[1]))].sort((a,b)=>a.localeCompare(b));
+  countries.forEach(c=>{
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    countrySelect.appendChild(opt);
+  });
+}
+
+function render(list){
+  container.innerHTML = "";
+
+  list.forEach(r=>{
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <img class="cardPhoto" src="${r[5]}" alt="${r[0]}">
+      <div>
+        <h3>${r[0]}</h3>
+        <p>${r[1]}</p>
+        <span class="badge ${r[2]}">${r[2]}</span>
+      </div>
+    `;
+
+    card.onclick = ()=>openCard(r);
+    container.appendChild(card);
+  });
+}
+
+function openCard(r){
+overlay.innerHTML=`
+<div class="bigCard ${r[2]}">
+  <div class="close" onclick="closeCard()">×</div>
+  <img class="modalPhoto" src="${r[5]}" alt="${r[0]}">
+  <h2>${r[0]}</h2>
+  <p class="conf">${r[2]}</p>
+  <p><strong>País:</strong> ${r[1]}</p>
+  <p><strong>Edad:</strong> ${r[3]} años</p>
+  <p><strong>FIFA desde:</strong> ${r[4]}</p>
+</div>
+`;
+
+overlay.style.display="flex";
+}
+
+function closeCard(){
+overlay.style.display="none";
+}
+
+function applyFilters(){
+const search = document.getElementById("search").value.toLowerCase();
+const conf = document.getElementById("confFilter").value;
+const country = document.getElementById("countryFilter").value;
+
+let filtered = referees.filter(r=>{
+  const okSearch = r[0].toLowerCase().includes(search);
+  const okConf = conf==="ALL" || r[2]===conf;
+  const okCountry = country==="ALL" || r[1]===country;
+  return okSearch && okConf && okCountry;
+});
+
+render(filtered);
+}
+
+overlay.addEventListener("click", function(e){
+  if(e.target === overlay){
+    closeCard();
+  }
+});
+
+loadCountries();
+render(referees);
+</script>
+
+</body>
+</html>

@@ -3,186 +3,134 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VAR FIFA 2026</title>
+<title>VAR - Árbitros de Video</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#0f172a;color:white}
-header{background:#111827;padding:30px;text-align:center}
-.filters{background:#111827;padding:20px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
-.filters input,.filters select,.filters button{padding:12px;border:none;border-radius:10px;background:#1e293b;color:white}
-.filters button{background:#dc2626;font-weight:bold;cursor:pointer}
-.container{width:90%;margin:auto;padding:25px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
-.card{background:#1e293b;border-radius:16px;padding:14px;cursor:pointer;border:1px solid rgba(255,255,255,.15);display:flex;gap:14px;align-items:center}
-.card:hover{transform:translateY(-4px);border:1px solid rgba(255,255,255,.35)}
-.cardPhoto{width:90px;height:115px;object-fit:cover;border-radius:12px;background:#334155;flex-shrink:0}
-.card h3{margin:0 0 6px 0;font-size:17px}
-.card p{margin:4px 0;font-size:13px;opacity:.85}
-.badge{display:inline-block;margin-top:6px;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:bold}
-.badge.UEFA{background:#1d4ed8}
-.badge.CONMEBOL{background:#d4af37;color:#111}
-.badge.CONCACAF{background:#38761d}
-.badge.CAF{background:#ff0000}
-.badge.AFC{background:#ff9900;color:#111}
-.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);display:none;justify-content:center;align-items:center;z-index:999}
-.bigCard{width:420px;max-width:90%;background:white;color:black;border-radius:18px;padding:25px;position:relative;text-align:center}
-.bigCard.UEFA{border:4px solid #1d4ed8}
-.bigCard.CONMEBOL{border:4px solid #d4af37}
-.bigCard.CONCACAF{border:4px solid #38761d}
-.bigCard.CAF{border:4px solid #ff0000}
-.bigCard.AFC{border:4px solid #ff9900}
-.modalPhoto{width:180px;height:220px;object-fit:cover;border-radius:14px;margin-bottom:15px;background:#ddd}
-.close{position:absolute;top:10px;right:15px;font-size:26px;cursor:pointer}
-@media(max-width:700px){.container{grid-template-columns:1fr}}
+body{font-family:Arial;background:#f4f4f4;margin:0}
+
+header{
+  background:#111827;
+  color:#ffffff;
+  padding:30px;
+  text-align:center;
+}
+
+.container{width:90%;margin:auto;padding:20px}
+
+.card{
+  background:#ffffff;
+  border-radius:16px;
+  padding:25px;
+  margin-bottom:25px;
+  display:flex;
+  gap:25px;
+  align-items:center;
+}
+
+.photo{
+  width:180px;
+  height:220px;
+  border-radius:12px;
+  object-fit:cover;
+  background:#ddd;
+}
+
+.info h2{margin:0}
+
+.conf{
+  font-weight:bold;
+}
+
+.UEFA{color:#1d4ed8}
+.CONMEBOL{color:#d4af37}
+.CONCACAF{color:#38761d}
+.CAF{color:#ff0000}
+.AFC{color:#ff9900}
+
+@media(max-width:700px){
+.card{
+flex-direction:column;
+text-align:center;
+}
+.photo{
+width:220px;
+height:270px;
+}
+}
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>🎥 FIFA WORLD CUP 2026™</h1>
-<h2>Video Match Officials - VAR</h2>
+<h1>FIFA WORLD CUP 2026™</h1>
+<h3 id="subtitle"></h3>
 </header>
 
-<div class="filters">
-<input id="search" placeholder="Buscar VAR..." oninput="applyFilters()">
-
-<select id="confFilter" onchange="applyFilters()">
-<option value="ALL">Todas las confederaciones</option>
-<option value="UEFA">UEFA</option>
-<option value="CONMEBOL">CONMEBOL</option>
-<option value="CONCACAF">CONCACAF</option>
-<option value="CAF">CAF</option>
-<option value="AFC">AFC</option>
-</select>
-
-<select id="countryFilter" onchange="applyFilters()">
-<option value="ALL">Todos los países</option>
-</select>
-
-<button onclick="resetFilters()">Eliminar filtros</button>
-</div>
-
 <div class="container" id="container"></div>
-<div class="overlay" id="overlay"></div>
 
 <script>
+
 const varOfficials = [
 ["BEBEK Ivan","Croacia","UEFA",49,2003,"Bebek_Ivan.jpeg"],
 ["BRISARD Jerome","Francia","UEFA",40,2018,"Brisard_Jerome.jpeg"],
-["DANKERT Bastian","Alemania","UEFA",46,2014,"Dankert_Bastian.jpeg"],
+["DANKERT Bastian","Alemania","UEFA",45,2014,"Dankert_Bastian.jpeg"],
 ["DEL CERRO GRANDE Carlos","España","UEFA",50,2013,"Carlos_Del_Cerro_Grande.jpeg"],
 ["DI BELLO Marco","Italia","UEFA",44,2018,"Di_Bello_Marco.jpeg"],
-["DIEPERINK Rob","Países Bajos","UEFA",38,"-","Dieperink_Rob.jpeg"],
-["GILLETT Jarred","Inglaterra","UEFA",39,2023,"Gillett_Jarred.jpeg"],
+["GILLETT Jarred","Inglaterra","UEFA",39,2013,"Gillett_Jarred.jpeg"],
 ["HIGLER Dennis","Países Bajos","UEFA",40,2017,"Higler_Dennis.jpeg"],
-["KWIATKOWSKI Tomasz","Polonia", "UEFA",48,"-","Kwiatkowski_Tomasz.jpeg"],
-["SAN Fedayi","Suiza","UEFA",43,"-","San_Fedayi.jpeg"],
+["KWIATKOWSKI Tomasz","Polonia","UEFA",47,2021,"Kwiatkowski_Tomasz.jpeg"],
+["SAN Fedayi","Suiza","UEFA",43,2019,"San_Fedayi.jpeg"],
 ["VAN DRIESSCHE Bram","Bélgica","UEFA",41,2019,"Van_Driessche_Bram.jpeg"],
 
-["GALLO Nicolas","Colombia","CONMEBOL",39,"-","Gallo_Nicolas.jpeg"],
-["GARCIA Antonio","Uruguay","CONMEBOL",39,"-","Garcia_Antonio.jpeg"],
+["GALLO Nicolas","Colombia","CONMEBOL",39,2018,"Gallo_Nicolas.jpeg"],
+["GARCIA Antonio","Uruguay","CONMEBOL",41,2024,"Garcia_Antonio.jpeg"],
 ["GONZALEZ Leodan","Uruguay","CONMEBOL",43,2016,"Gonzalez_Leodan.jpeg"],
 ["LARA Juan","Chile","CONMEBOL",37,2021,"Lara_Juan.jpeg"],
-["MASTRANGELO Hernan","Argentina","CONMEBOL",45,"-","Mastrangelo_Hernan.jpeg"],
+["MASTRANGELO Hernan","Argentina","CONMEBOL",41,2022,"Mastrangelo_Hernan.jpeg"],
 ["SOTO Juan","Venezuela","CONMEBOL",48,2005,"Soto_Juan.jpeg"],
 ["TOSKI Rodolpho","Brasil","CONMEBOL",39,2017,"Toski_Rodolpho.jpeg"],
 
 ["DICKERSON Joe","Estados Unidos","CONCACAF",38,2023,"Dickerson_Joe.jpeg"],
 ["GUZMAN Tatiana","Nicaragua","CONCACAF",38,2014,"Guzman_Tatiana.jpeg"],
 ["MIRANDA Erick","México","CONCACAF",44,2016,"Miranda_Erick.jpeg"],
-["PACHECO Guillermo","México","CONCACAF",31,"-","Pacheco_Guillermo.jpeg"],
+["PACHECO Guillermo","México","CONCACAF",31,2023,"Pacheco_Guillermo.jpeg"],
 ["VILLARREAL Armando","Estados Unidos","CONCACAF",40,2015,"Villarreal_Armando.png"],
 
-["EL FARIQ Hamza","Marruecos","CAF",35,2025,"El_Fariq_Hamza.jpeg"],
 ["ASHOUR Mahmoud","Egipto","CAF",49,2011,"Ashour_Mahmoud.jpeg"],
+["EL FARIQ Hamza","Marruecos","CAF",36,2024,"El_Fariq_Hamza.jpeg"],
 
 ["AL-MARRI Khamis","Catar","AFC",41,2010,"Al_Marris_Khamis.jpeg"],
-["ALSHEHRI Abdullah","Arabia Saudí","AFC","-",2022,"Alshehri_Abdullah.jpeg"],
+["ALSHEHRI Abdullah","Arabia Saudí","AFC",34,2022,"Alshehri_Abdullah.jpeg"],
 ["EVANS Shaun","Australia","AFC",38,2017,"Evans_Shaun.jpeg"],
 ["FU Ming","China","AFC",43,2014,"Fu_Ming.jpeg"],
-["MOHAMMED OBAID KHADIM","Emiratos Árabes Unidos","AFC",41,"-","Mohammed_Obaid_Khadim.jpeg"]
+["MOHAMMED OBAID KHADIM","Emiratos Árabes Unidos","AFC",41,2013,"Mohammed_Obaid_Khadim.jpeg"]
 ];
 
+document.getElementById("subtitle").textContent =
+`${varOfficials.length} Árbitros de Video - VAR`;
+
 const container=document.getElementById("container");
-const overlay=document.getElementById("overlay");
-const countrySelect=document.getElementById("countryFilter");
 
-function loadCountries(){
-const countries=[...new Set(varOfficials.map(v=>v[1]))].sort((a,b)=>a.localeCompare(b));
-countries.forEach(c=>{
-const opt=document.createElement("option");
-opt.value=c;
-opt.textContent=c;
-countrySelect.appendChild(opt);
-});
-}
-
-function render(list){
-container.innerHTML="";
-list.forEach(v=>{
+varOfficials.forEach(r=>{
 const card=document.createElement("div");
 card.className="card";
+
 card.innerHTML=`
-<img class="cardPhoto" src="${v[5]}" alt="${v[0]}">
-<div>
-<h3>${v[0]}</h3>
-<p>${v[1]}</p>
-<span class="badge ${v[2]}">${v[2]}</span>
+<img class="photo" src="${r[5]}" alt="${r[0]}">
+
+<div class="info">
+<h2>${r[0]}</h2>
+<p class="conf ${r[2]}">${r[2]} · VAR</p>
+<p><strong>País:</strong> ${r[1]}</p>
+<p><strong>Edad:</strong> ${r[3]} años</p>
+<p><strong>FIFA desde:</strong> ${r[4]}</p>
 </div>
 `;
-card.onclick=()=>openCard(v);
+
 container.appendChild(card);
 });
-}
 
-function openCard(v){
-overlay.innerHTML=`
-<div class="bigCard ${v[2]}">
-<div class="close" onclick="closeCard()">×</div>
-<img class="modalPhoto" src="${v[5]}" alt="${v[0]}">
-<h2>${v[0]}</h2>
-<p><strong>Confederación:</strong> ${v[2]}</p>
-<p><strong>País:</strong> ${v[1]}</p>
-<p><strong>Edad:</strong> ${v[3]} años</p>
-<p><strong>FIFA desde:</strong> ${v[4]}</p>
-<p><strong>Función:</strong> Video Match Official</p>
-</div>
-`;
-overlay.style.display="flex";
-}
-
-function closeCard(){
-overlay.style.display="none";
-}
-
-function applyFilters(){
-const search=document.getElementById("search").value.toLowerCase();
-const conf=document.getElementById("confFilter").value;
-const country=document.getElementById("countryFilter").value;
-
-const filtered=varOfficials.filter(v=>{
-const okSearch=v[0].toLowerCase().includes(search);
-const okConf=conf==="ALL" || v[2]===conf;
-const okCountry=country==="ALL" || v[1]===country;
-return okSearch && okConf && okCountry;
-});
-
-render(filtered);
-}
-
-function resetFilters(){
-document.getElementById("search").value="";
-document.getElementById("confFilter").value="ALL";
-document.getElementById("countryFilter").value="ALL";
-render(varOfficials);
-}
-
-overlay.addEventListener("click",e=>{
-if(e.target===overlay){closeCard();}
-});
-
-loadCountries();
-render(varOfficials);
 </script>
 
 </body>

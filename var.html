@@ -3,151 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VAR FIFA 2026 - Video Match Officials</title>
+<title>VAR FIFA 2026</title>
 
 <style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#0f172a;
-  color:white;
-}
-
-header{
-  background:#111827;
-  padding:30px;
-  text-align:center;
-}
-
-.filters{
-  background:#111827;
-  padding:20px;
-  display:flex;
-  justify-content:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.filters input,
-.filters select,
-.filters button{
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#1e293b;
-  color:white;
-}
-
-.filters button{
-  background:#dc2626;
-  cursor:pointer;
-  font-weight:bold;
-}
-
-.container{
-  width:90%;
-  margin:auto;
-  padding:25px;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
-  gap:18px;
-}
-
-.card{
-  background:#1e293b;
-  border-radius:16px;
-  padding:18px;
-  cursor:pointer;
-  border:1px solid rgba(255,255,255,0.15);
-  transition:.2s;
-}
-
-.card:hover{
-  transform:translateY(-4px);
-  border:1px solid rgba(255,255,255,0.35);
-}
-
-.card h3{
-  margin:0 0 8px 0;
-}
-
-.card p{
-  margin:5px 0;
-  opacity:.85;
-}
-
-.badge{
-  display:inline-block;
-  margin-top:8px;
-  padding:5px 10px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:bold;
-}
-
-.UEFA{background:#1d4ed8;}
-.CONMEBOL{background:#d4af37;color:#111;}
-.CONCACAF{background:#38761d;}
-.CAF{background:#ff0000;}
-.AFC{background:#ff9900;color:#111;}
-.OFC{background:#000;}
-
-.overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.75);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:999;
-}
-
-.bigCard{
-  width:420px;
-  max-width:90%;
-  background:white;
-  color:black;
-  border-radius:18px;
-  padding:25px;
-  position:relative;
-  text-align:center;
-}
-
-.bigCard.UEFA{border:4px solid #1d4ed8;}
-.bigCard.CONMEBOL{border:4px solid #d4af37;}
-.bigCard.CONCACAF{border:4px solid #38761d;}
-.bigCard.CAF{border:4px solid #ff0000;}
-.bigCard.AFC{border:4px solid #ff9900;}
-
-.close{
-  position:absolute;
-  top:10px;
-  right:15px;
-  font-size:26px;
-  cursor:pointer;
-}
-
-.placeholder{
-  width:160px;
-  height:200px;
-  background:#e5e7eb;
-  color:#111827;
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto 15px auto;
-  font-weight:bold;
-}
-
-@media(max-width:700px){
-  .container{
-    grid-template-columns:1fr;
-  }
-}
+body{margin:0;font-family:Arial;background:#0f172a;color:white}
+header{background:#111827;padding:30px;text-align:center}
+.filters{background:#111827;padding:20px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.filters input,.filters select,.filters button{padding:12px;border:none;border-radius:10px;background:#1e293b;color:white}
+.filters button{background:#dc2626;font-weight:bold;cursor:pointer}
+.container{width:90%;margin:auto;padding:25px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.card{background:#1e293b;border-radius:16px;padding:14px;cursor:pointer;border:1px solid rgba(255,255,255,.15);display:flex;gap:14px;align-items:center}
+.card:hover{transform:translateY(-4px);border:1px solid rgba(255,255,255,.35)}
+.cardPhoto{width:90px;height:115px;object-fit:cover;border-radius:12px;background:#334155;flex-shrink:0}
+.card h3{margin:0 0 6px 0;font-size:17px}
+.card p{margin:4px 0;font-size:13px;opacity:.85}
+.badge{display:inline-block;margin-top:6px;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:bold}
+.badge.UEFA{background:#1d4ed8}
+.badge.CONMEBOL{background:#d4af37;color:#111}
+.badge.CONCACAF{background:#38761d}
+.badge.CAF{background:#ff0000}
+.badge.AFC{background:#ff9900;color:#111}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);display:none;justify-content:center;align-items:center;z-index:999}
+.bigCard{width:420px;max-width:90%;background:white;color:black;border-radius:18px;padding:25px;position:relative;text-align:center}
+.bigCard.UEFA{border:4px solid #1d4ed8}
+.bigCard.CONMEBOL{border:4px solid #d4af37}
+.bigCard.CONCACAF{border:4px solid #38761d}
+.bigCard.CAF{border:4px solid #ff0000}
+.bigCard.AFC{border:4px solid #ff9900}
+.modalPhoto{width:180px;height:220px;object-fit:cover;border-radius:14px;margin-bottom:15px;background:#ddd}
+.close{position:absolute;top:10px;right:15px;font-size:26px;cursor:pointer}
+@media(max-width:700px){.container{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -182,40 +67,40 @@ header{
 
 <script>
 const varOfficials = [
-["BEBEK Ivan","Croacia","UEFA",49,2003],
-["BRISARD Jerome","Francia","UEFA",40,2018],
-["DANKERT Bastian","Alemania","UEFA",46,2014],
-["DEL CERRO GRANDE Carlos","España","UEFA",50,2013],
-["DI BELLO Marco","Italia","UEFA",44,2018],
-["DIEPERINK Rob","Países Bajos","UEFA",38,"-"],
-["GILLETT Jarred","Inglaterra","UEFA",39,2023],
-["HIGLER Dennis","Países Bajos","UEFA",40,2017],
-["KWIATKOWSKI Tomasz","Polonia","UEFA",48,"-"],
-["SAN Fedayi","Suiza","UEFA",43,"-"],
-["VAN DRIESSCHE Bram","Bélgica","UEFA",41,2019],
+["BEBEK Ivan","Croacia","UEFA",49,2003,"Bebek_Ivan.jpeg"],
+["BRISARD Jerome","Francia","UEFA",40,2018,"Brisard_Jerome.jpeg"],
+["DANKERT Bastian","Alemania","UEFA",46,2014,"Dankert_Bastian.jpeg"],
+["DEL CERRO GRANDE Carlos","España","UEFA",50,2013,"Carlos_Del_Cerro_Grande.jpeg"],
+["DI BELLO Marco","Italia","UEFA",44,2018,"Di_Bello_Marco.jpeg"],
+["DIEPERINK Rob","Países Bajos","UEFA",38,"-","Dieperink_Rob.jpeg"],
+["GILLETT Jarred","Inglaterra","UEFA",39,2023,"Gillett_Jarred.jpeg"],
+["HIGLER Dennis","Países Bajos","UEFA",40,2017,"Higler_Dennis.jpeg"],
+["KWIATKOWSKI Tomasz","Polonia", "UEFA",48,"-","Kwiatkowski_Tomasz.jpeg"],
+["SAN Fedayi","Suiza","UEFA",43,"-","San_Fedayi.jpeg"],
+["VAN DRIESSCHE Bram","Bélgica","UEFA",41,2019,"Van_Driessche_Bram.jpeg"],
 
-["GALLO Nicolas","Colombia","CONMEBOL",39,"-"],
-["GARCIA Antonio","Uruguay","CONMEBOL",39,"-"],
-["GONZALEZ Leodan","Uruguay","CONMEBOL",43,2016],
-["LARA Juan","Chile","CONMEBOL",37,2021],
-["MASTRANGELO Hernan","Argentina","CONMEBOL",45,"-"],
-["SOTO Juan","Venezuela","CONMEBOL",48,2005],
-["TOSKI Rodolpho","Brasil","CONMEBOL",39,2017],
+["GALLO Nicolas","Colombia","CONMEBOL",39,"-","Gallo_Nicolas.jpeg"],
+["GARCIA Antonio","Uruguay","CONMEBOL",39,"-","Garcia_Antonio.jpeg"],
+["GONZALEZ Leodan","Uruguay","CONMEBOL",43,2016,"Gonzalez_Leodan.jpeg"],
+["LARA Juan","Chile","CONMEBOL",37,2021,"Lara_Juan.jpeg"],
+["MASTRANGELO Hernan","Argentina","CONMEBOL",45,"-","Mastrangelo_Hernan.jpeg"],
+["SOTO Juan","Venezuela","CONMEBOL",48,2005,"Soto_Juan.jpeg"],
+["TOSKI Rodolpho","Brasil","CONMEBOL",39,2017,"Toski_Rodolpho.jpeg"],
 
-["DICKERSON Joe","Estados Unidos","CONCACAF",38,2023],
-["GUZMAN Tatiana","Nicaragua","CONCACAF",38,2014],
-["MIRANDA Erick","México","CONCACAF",44,2016],
-["PACHECO Guillermo","México","CONCACAF",31,"-"],
-["VILLARREAL Armando","Estados Unidos","CONCACAF",40,2015],
+["DICKERSON Joe","Estados Unidos","CONCACAF",38,2023,"Dickerson_Joe.jpeg"],
+["GUZMAN Tatiana","Nicaragua","CONCACAF",38,2014,"Guzman_Tatiana.jpeg"],
+["MIRANDA Erick","México","CONCACAF",44,2016,"Miranda_Erick.jpeg"],
+["PACHECO Guillermo","México","CONCACAF",31,"-","Pacheco_Guillermo.jpeg"],
+["VILLARREAL Armando","Estados Unidos","CONCACAF",40,2015,"Villarreal_Armando.png"],
 
-["EL FARIQ Hamza","Marruecos","CAF",35,2025],
-["ASHOUR Mahmoud","Egipto","CAF",49,2011],
+["EL FARIQ Hamza","Marruecos","CAF",35,2025,"El_Fariq_Hamza.jpeg"],
+["ASHOUR Mahmoud","Egipto","CAF",49,2011,"Ashour_Mahmoud.jpeg"],
 
-["AL-MARRI Khamis","Catar","AFC",41,2010],
-["ALSHEHRI Abdullah","Arabia Saudí","AFC","-",2022],
-["EVANS Shaun","Australia","AFC",38,2017],
-["FU Ming","China","AFC",43,2014],
-["MOHAMMED OBAID KHADIM","Emiratos Árabes Unidos","AFC",41,"-"]
+["AL-MARRI Khamis","Catar","AFC",41,2010,"Al_Marris_Khamis.jpeg"],
+["ALSHEHRI Abdullah","Arabia Saudí","AFC","-",2022,"Alshehri_Abdullah.jpeg"],
+["EVANS Shaun","Australia","AFC",38,2017,"Evans_Shaun.jpeg"],
+["FU Ming","China","AFC",43,2014,"Fu_Ming.jpeg"],
+["MOHAMMED OBAID KHADIM","Emiratos Árabes Unidos","AFC",41,"-","Mohammed_Obaid_Khadim.jpeg"]
 ];
 
 const container=document.getElementById("container");
@@ -223,80 +108,77 @@ const overlay=document.getElementById("overlay");
 const countrySelect=document.getElementById("countryFilter");
 
 function loadCountries(){
-  const countries=[...new Set(varOfficials.map(v=>v[1]))].sort((a,b)=>a.localeCompare(b));
-  countries.forEach(c=>{
-    const opt=document.createElement("option");
-    opt.value=c;
-    opt.textContent=c;
-    countrySelect.appendChild(opt);
-  });
+const countries=[...new Set(varOfficials.map(v=>v[1]))].sort((a,b)=>a.localeCompare(b));
+countries.forEach(c=>{
+const opt=document.createElement("option");
+opt.value=c;
+opt.textContent=c;
+countrySelect.appendChild(opt);
+});
 }
 
 function render(list){
-  container.innerHTML="";
-
-  list.forEach(v=>{
-    const card=document.createElement("div");
-    card.className="card";
-
-    card.innerHTML=`
-      <h3>${v[0]}</h3>
-      <p>${v[1]}</p>
-      <span class="badge ${v[2]}">${v[2]}</span>
-    `;
-
-    card.onclick=()=>openCard(v);
-    container.appendChild(card);
-  });
+container.innerHTML="";
+list.forEach(v=>{
+const card=document.createElement("div");
+card.className="card";
+card.innerHTML=`
+<img class="cardPhoto" src="${v[5]}" alt="${v[0]}">
+<div>
+<h3>${v[0]}</h3>
+<p>${v[1]}</p>
+<span class="badge ${v[2]}">${v[2]}</span>
+</div>
+`;
+card.onclick=()=>openCard(v);
+container.appendChild(card);
+});
 }
 
 function openCard(v){
-  overlay.innerHTML=`
-    <div class="bigCard ${v[2]}">
-      <div class="close" onclick="closeCard()">×</div>
-      <div class="placeholder">FOTO VAR</div>
-      <h2>${v[0]}</h2>
-      <p><strong>Confederación:</strong> ${v[2]}</p>
-      <p><strong>País:</strong> ${v[1]}</p>
-      <p><strong>Edad:</strong> ${v[3]} años</p>
-      <p><strong>FIFA desde:</strong> ${v[4]}</p>
-      <p><strong>Función:</strong> Video Match Official</p>
-    </div>
-  `;
-
-  overlay.style.display="flex";
+overlay.innerHTML=`
+<div class="bigCard ${v[2]}">
+<div class="close" onclick="closeCard()">×</div>
+<img class="modalPhoto" src="${v[5]}" alt="${v[0]}">
+<h2>${v[0]}</h2>
+<p><strong>Confederación:</strong> ${v[2]}</p>
+<p><strong>País:</strong> ${v[1]}</p>
+<p><strong>Edad:</strong> ${v[3]} años</p>
+<p><strong>FIFA desde:</strong> ${v[4]}</p>
+<p><strong>Función:</strong> Video Match Official</p>
+</div>
+`;
+overlay.style.display="flex";
 }
 
 function closeCard(){
-  overlay.style.display="none";
+overlay.style.display="none";
 }
 
 function applyFilters(){
-  const search=document.getElementById("search").value.toLowerCase();
-  const conf=document.getElementById("confFilter").value;
-  const country=document.getElementById("countryFilter").value;
+const search=document.getElementById("search").value.toLowerCase();
+const conf=document.getElementById("confFilter").value;
+const country=document.getElementById("countryFilter").value;
 
-  const filtered=varOfficials.filter(v=>{
-    const okSearch=v[0].toLowerCase().includes(search);
-    const okConf=conf==="ALL" || v[2]===conf;
-    const okCountry=country==="ALL" || v[1]===country;
-    return okSearch && okConf && okCountry;
-  });
+const filtered=varOfficials.filter(v=>{
+const okSearch=v[0].toLowerCase().includes(search);
+const okConf=conf==="ALL" || v[2]===conf;
+const okCountry=country==="ALL" || v[1]===country;
+return okSearch && okConf && okCountry;
+});
 
-  render(filtered);
+render(filtered);
 }
 
 function resetFilters(){
-  document.getElementById("search").value="";
-  document.getElementById("confFilter").value="ALL";
-  document.getElementById("countryFilter").value="ALL";
-  render(varOfficials);
+document.getElementById("search").value="";
+document.getElementById("confFilter").value="ALL";
+document.getElementById("countryFilter").value="ALL";
+render(varOfficials);
 }
 
 overlay.addEventListener("click",e=>{
-  if(e.target===overlay){
-    closeCard();
-  }
+if(e.target===overlay){closeCard();}
 });
 
 loadCountries();

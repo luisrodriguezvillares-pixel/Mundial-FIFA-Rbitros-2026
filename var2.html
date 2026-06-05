@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAR - Árbitros de Video</title>
+
+<style>
+body{font-family:Arial;background:#f4f4f4;margin:0}
+
+header{
+  background:#111827;
+  color:#ffffff;
+  padding:30px;
+  text-align:center;
+}
+
+.container{width:90%;margin:auto;padding:20px}
+
+.card{
+  background:#ffffff;
+  border-radius:16px;
+  padding:25px;
+  margin-bottom:25px;
+  display:flex;
+  gap:25px;
+  align-items:center;
+}
+
+.photo{
+  width:180px;
+  height:220px;
+  border-radius:12px;
+  object-fit:cover;
+  background:#ddd;
+}
+
+.info h2{margin:0}
+
+.conf{
+  font-weight:bold;
+}
+
+.UEFA{color:#1d4ed8}
+.CONMEBOL{color:#d4af37}
+.CONCACAF{color:#38761d}
+.CAF{color:#ff0000}
+.AFC{color:#ff9900}
+
+@media(max-width:700px){
+.card{
+flex-direction:column;
+text-align:center;
+}
+.photo{
+width:220px;
+height:270px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>FIFA WORLD CUP 2026™</h1>
+<h3 id="subtitle"></h3>
+</header>
+
+<div class="container" id="container"></div>
+
+<script>
+
+const varOfficials = [
+["BEBEK Ivan","Croacia","UEFA",49,2003,"Bebek_Ivan.jpeg"],
+["BRISARD Jerome","Francia","UEFA",40,2018,"Brisard_Jerome.jpeg"],
+["DANKERT Bastian","Alemania","UEFA",45,2014,"Dankert_Bastian.jpeg"],
+["DEL CERRO GRANDE Carlos","España","UEFA",50,2013,"Carlos_Del_Cerro_Grande.jpeg"],
+["DI BELLO Marco","Italia","UEFA",44,2018,"Di_Bello_Marco.jpeg"],
+["GILLETT Jarred","Inglaterra","UEFA",39,2013,"Gillett_Jarred.jpeg"],
+["HIGLER Dennis","Países Bajos","UEFA",40,2017,"Higler_Dennis.jpeg"],
+["KWIATKOWSKI Tomasz","Polonia","UEFA",47,2021,"Kwiatkowski_Tomasz.jpeg"],
+["SAN Fedayi","Suiza","UEFA",43,2019,"San_Fedayi.jpeg"],
+["VAN DRIESSCHE Bram","Bélgica","UEFA",41,2019,"Van_Driessche_Bram.jpeg"],
+
+["GALLO Nicolas","Colombia","CONMEBOL",39,2018,"Gallo_Nicolas.jpeg"],
+["GARCIA Antonio","Uruguay","CONMEBOL",41,2024,"Garcia_Antonio.jpeg"],
+["GONZALEZ Leodan","Uruguay","CONMEBOL",43,2016,"Gonzalez_Leodan.jpeg"],
+["LARA Juan","Chile","CONMEBOL",37,2021,"Lara_Juan.jpeg"],
+["MASTRANGELO Hernan","Argentina","CONMEBOL",41,2022,"Mastrangelo_Hernan.jpeg"],
+["SOTO Juan","Venezuela","CONMEBOL",48,2005,"Soto_Juan.jpeg"],
+["TOSKI Rodolpho","Brasil","CONMEBOL",39,2017,"Toski_Rodolpho.jpeg"],
+
+["DICKERSON Joe","Estados Unidos","CONCACAF",38,2023,"Dickerson_Joe.jpeg"],
+["GUZMAN Tatiana","Nicaragua","CONCACAF",38,2014,"Guzman_Tatiana.jpeg"],
+["MIRANDA Erick","México","CONCACAF",44,2016,"Miranda_Erick.jpeg"],
+["PACHECO Guillermo","México","CONCACAF",31,2023,"Pacheco_Guillermo.jpeg"],
+["VILLARREAL Armando","Estados Unidos","CONCACAF",40,2015,"Villarreal_Armando.png"],
+
+["ASHOUR Mahmoud","Egipto","CAF",49,2011,"Ashour_Mahmoud.jpeg"],
+["EL FARIQ Hamza","Marruecos","CAF",36,2024,"El_Fariq_Hamza.jpeg"],
+
+["AL-MARRI Khamis","Catar","AFC",41,2010,"Al_Marris_Khamis.jpeg"],
+["ALSHEHRI Abdullah","Arabia Saudí","AFC",34,2022,"Alshehri_Abdullah.jpeg"],
+["EVANS Shaun","Australia","AFC",38,2017,"Evans_Shaun.jpeg"],
+["FU Ming","China","AFC",43,2014,"Fu_Ming.jpeg"],
+["MOHAMMED OBAID KHADIM","Emiratos Árabes Unidos","AFC",41,2013,"Mohammed_Obaid_Khadim.jpeg"]
+];
+
+document.getElementById("subtitle").textContent =
+`${varOfficials.length} Árbitros de Video - VAR`;
+
+const container=document.getElementById("container");
+
+varOfficials.forEach(r=>{
+const card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=`
+<img class="photo" src="${r[5]}" alt="${r[0]}">
+
+<div class="info">
+<h2>${r[0]}</h2>
+<p class="conf ${r[2]}">${r[2]} · VAR</p>
+<p><strong>País:</strong> ${r[1]}</p>
+<p><strong>Edad:</strong> ${r[3]} años</p>
+<p><strong>FIFA desde:</strong> ${r[4]}</p>
+</div>
+`;
+
+container.appendChild(card);
+});
+
+</script>
+
+</body>
+</html>

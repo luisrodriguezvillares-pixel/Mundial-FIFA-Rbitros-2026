@@ -4,42 +4,212 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FIFA WORLD CUP 2026 · MATCH CENTER</title>
-
 <style>
-body{margin:0;font-family:Arial;background:#0a0f1f;color:white}
-header{background:#111b33;padding:14px;text-align:center;font-weight:800}
-.topbar{display:flex;gap:8px;padding:10px}
-#search,#filter{flex:1;padding:8px;border-radius:8px;border:none;font-size:12px}
-.container{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:10px}
-.match{background:#111b33;border-radius:14px;padding:10px;position:relative;border:1px solid rgba(255,255,255,.08)}
-.date{font-size:11px;opacity:.6}
-.teams{display:flex;justify-content:space-between;align-items:center;margin:8px 0;gap:6px}
-.team{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800}
-.flag{width:20px;height:14px;border-radius:2px}
-.hour{font-size:12px;font-weight:900;opacity:.8}
-.info{font-size:10px;opacity:.6}
-.state{position:absolute;top:8px;right:8px;font-size:10px;padding:3px 6px;border-radius:6px;background:rgba(255,255,255,.08)}
-.state.live{color:#ff3b30}
-.state.done{color:#22c55e}
-.ref{font-size:11px;margin-top:6px;opacity:.85}
-select,input{width:100%;margin-top:5px;padding:5px;font-size:10px;border-radius:6px;border:none;background:#0b1220;color:white}
-.btnRow{display:flex;gap:6px;margin-top:6px}
-.btnHalf{flex:1;padding:5px;font-size:10px;border:none;border-radius:6px;font-weight:700;cursor:pointer}
-.assign{background:#22c55e}
-.remove{background:#ef4444}
-.liveBtn,.evalBtn{width:100%;margin-top:6px;padding:6px;font-size:11px;font-weight:800;border:none;border-radius:8px;cursor:pointer;color:white}
-.liveBtn{background:#ff3b30;display:none}
-.evalBtn{background:#2563eb}
-.evalPanel{display:none;margin-top:8px;padding:8px;border-radius:10px;background:#0b1220;border:1px solid rgba(255,255,255,.08)}
-.evalGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
-.evalGrid label{font-size:10px;opacity:.7}
-.noteBox{margin-top:7px;font-size:11px;font-weight:800;color:#93c5fd}
-@media(max-width:800px){.container{grid-template-columns:1fr}}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#0a0f1f;
+  color:white;
+}
+
+header{
+  background:#111b33;
+  padding:14px;
+  text-align:center;
+  font-weight:800;
+}
+
+.topbar{
+  display:flex;
+  gap:8px;
+  padding:10px;
+}
+
+#search,#filter{
+  flex:1;
+  padding:8px;
+  border-radius:8px;
+  border:none;
+  font-size:12px;
+}
+
+.container{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  padding:10px;
+}
+
+.match{
+  background:#111b33;
+  border-radius:14px;
+  padding:10px;
+  position:relative;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.date{
+  font-size:11px;
+  opacity:.6;
+}
+
+.teams{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:8px 0;
+  gap:6px;
+}
+
+.team{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.flag{
+  width:20px;
+  height:14px;
+  border-radius:2px;
+}
+
+.hour{
+  font-size:12px;
+  font-weight:900;
+  opacity:.8;
+}
+
+.info{
+  font-size:10px;
+  opacity:.6;
+}
+
+.state{
+  position:absolute;
+  top:8px;
+  right:8px;
+  font-size:10px;
+  padding:3px 6px;
+  border-radius:6px;
+  background:rgba(255,255,255,.08);
+}
+
+.state.live{
+  color:#ff3b30;
+}
+
+.state.done{
+  color:#22c55e;
+}
+
+.ref{
+  font-size:11px;
+  margin-top:6px;
+  opacity:.85;
+}
+
+select,
+input{
+  width:100%;
+  margin-top:5px;
+  padding:5px;
+  font-size:10px;
+  border-radius:6px;
+  border:none;
+  background:#0b1220;
+  color:white;
+}
+
+.btnRow{
+  display:flex;
+  gap:6px;
+  margin-top:6px;
+}
+
+.btnHalf{
+  flex:1;
+  padding:5px;
+  font-size:10px;
+  border:none;
+  border-radius:6px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.assign{
+  background:#22c55e;
+}
+
+.remove{
+  background:#ef4444;
+}
+
+.liveBtn,
+.evalBtn,
+.deleteEvalBtn{
+  width:100%;
+  margin-top:6px;
+  padding:6px;
+  font-size:11px;
+  font-weight:800;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  color:white;
+}
+
+.liveBtn{
+  background:#ff3b30;
+  display:none;
+}
+
+.evalBtn{
+  background:#2563eb;
+}
+
+.deleteEvalBtn{
+  background:#ef4444;
+}
+
+.evalPanel{
+  display:none;
+  margin-top:8px;
+  padding:8px;
+  border-radius:10px;
+  background:#0b1220;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.evalGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:7px;
+}
+
+.evalGrid label{
+  font-size:10px;
+  opacity:.7;
+}
+
+.noteBox{
+  margin-top:7px;
+  font-size:11px;
+  font-weight:800;
+  color:#93c5fd;
+}
+
+@media(max-width:800px){
+  .container{
+    grid-template-columns:1fr;
+  }
+}
 </style>
+
 </head>
 
 <body>
-
 <header>FIFA WORLD CUP 2026 · MATCH CENTER</header>
 
 <div class="topbar">
@@ -295,8 +465,10 @@ ${varOfficials.map(v=>`<option ${data.varReferee===v?"selected":""}>${v}</option
 </div>
 
 <button class="evalBtn" onclick="calcularNota(${i})">Calcular nota</button>
+
+<button class="deleteEvalBtn" onclick="eliminarValoracion(${i})">Eliminar valoración</button>
+
 <div class="noteBox" id="nota-${i}">${data.notaHTML||"Sin valoración"}</div>
-</div>
 `;
 
 container.appendChild(card);
@@ -424,6 +596,34 @@ amarillaMal,amarillaBien,rojas,rojaMal,penaltis,buenvar,
 ventajas,control,addedGood,addedBad,auto,final,notaHTML
 });
 save();
+}
+
+function eliminarValoracion(i){
+  saved[i] = saved[i] || {};
+
+  delete saved[i].personal;
+  delete saved[i].varReviews;
+  delete saved[i].menores;
+  delete saved[i].importantes;
+  delete saved[i].graves;
+  delete saved[i].varError;
+  delete saved[i].gestion;
+  delete saved[i].amarillaMal;
+  delete saved[i].amarillaBien;
+  delete saved[i].rojas;
+  delete saved[i].rojaMal;
+  delete saved[i].penaltis;
+  delete saved[i].buenvar;
+  delete saved[i].ventajas;
+  delete saved[i].control;
+  delete saved[i].addedGood;
+  delete saved[i].addedBad;
+  delete saved[i].auto;
+  delete saved[i].final;
+  delete saved[i].notaHTML;
+
+  save();
+  render();
 }
 
 function applyFilters(){

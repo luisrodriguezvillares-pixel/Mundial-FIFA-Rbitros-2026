@@ -302,25 +302,43 @@ applyFilters();
 }
 
 function apply(i){
-const ref=document.getElementById("refsel-"+i).value;
-const state=document.getElementById("statesel-"+i).value;
+  const ref = document.getElementById("refsel-"+i).value;
+  const varRef = document.getElementById("varsel-"+i).value;
+  const state = document.getElementById("statesel-"+i).value;
 
-saved[i]=saved[i]||{};
-saved[i].referee=ref==="Seleccionar árbitro"?"":ref;
-saved[i].state=state;
-save();
+  saved[i] = saved[i] || {};
+  saved[i].referee = ref;
+  saved[i].varReferee = varRef;
+  saved[i].state = state;
+  save();
 
-document.getElementById("ref-"+i).textContent="Árbitro: "+(saved[i].referee||"Sin asignar");
+  document.getElementById("ref-"+i).textContent =
+    "Árbitro: " + (saved[i].referee || "Sin asignar");
 
-const st=document.getElementById("state-"+i);
-const live=document.getElementById("live-"+i);
-st.className="state";
+  document.getElementById("varref-"+i).textContent =
+    "VAR: " + (saved[i].varReferee || "Sin asignar");
 
-if(state==="not"){st.textContent="No iniciado";live.style.display="none";}
-if(state==="live"){st.textContent="EN DIRECTO";st.classList.add("live");live.style.display="block";}
-if(state==="done"){st.textContent="Finalizado";st.classList.add("done");live.style.display="none";}
+  const st = document.getElementById("state-"+i);
+  const live = document.getElementById("live-"+i);
 
-applyFilters();
+  st.className = "state";
+
+  if(state==="not"){
+    st.textContent="No iniciado";
+    live.style.display="none";
+  }
+  if(state==="live"){
+    st.textContent="EN DIRECTO";
+    st.classList.add("live");
+    live.style.display="block";
+  }
+  if(state==="done"){
+    st.textContent="Finalizado";
+    st.classList.add("done");
+    live.style.display="none";
+  }
+
+  applyFilters();
 }
 
 function clearRef(i){

@@ -91,7 +91,39 @@ const referees=[
 "AL JASSIM Abdulrahman 🇶🇦","AL TURAIS Khalid 🇸🇦","ARAKI Yusuke 🇯🇵","FAGHANI Alireza 🇦🇺","MA Ning 🇨🇳","MAKHADMEH Adham 🇯🇴","OMAR AL ALI 🇦🇪","TANTASHEV Ilgiz 🇺🇿",
 "KAWANA-WAUGH Campbell-Kirk 🇳🇿"
 ];
-
+const varOfficials=[
+"BEBEK Ivan 🇭🇷",
+"BRISARD Jerome 🇫🇷",
+"DANKERT Bastian 🇩🇪",
+"DEL CERRO GRANDE Carlos 🇪🇸",
+"DELAJOD Willy 🇫🇷",
+"DI BELLO Marco 🇮🇹",
+"DIEPERINK Rob 🇳🇱",
+"GILLETT Jarred 🇦🇺",
+"HIGLER Dennis 🇳🇱",
+"KWIATKOWSKI Tomasz 🇵🇱",
+"SAN Fedayi 🇨🇭",
+"VAN DRIESSCHE Bram 🇧🇪",
+"GALLO Nicolas 🇨🇴",
+"GARCIA Antonio 🇺🇾",
+"GONZALEZ Leodan 🇺🇾",
+"LARA Juan 🇨🇱",
+"MASTRANGELO Hernan 🇦🇷",
+"SOTO Juan 🇻🇪",
+"TOSKI Rodolpho 🇧🇷",
+"DICKERSON Joe 🇺🇸",
+"GUZMAN Tatiana 🇳🇮",
+"MIRANDA Erick 🇲🇽",
+"PACHECO Guillermo 🇲🇽",
+"VILLARREAL Armando 🇺🇸",
+"ASHOUR Mahmoud 🇪🇬",
+"EL FARIQ Hamza 🇲🇦",
+"AL-MARRI Khamis 🇶🇦",
+"ALSHEHRI Abdullah 🇸🇦",
+"EVANS Shaun 🇦🇺",
+"FU Ming 🇨🇳",
+"MOHAMMED OBAID KHADIM 🇦🇪"
+];
 function flag(team){
 const map={
 "México":"mx","Sudáfrica":"za","República de Corea":"kr","Chequia":"cz","Canadá":"ca","Bosnia y Herzegovina":"ba","EE. UU.":"us","Paraguay":"py","Catar":"qa","Suiza":"ch","Brasil":"br","Marruecos":"ma","Haití":"ht","Escocia":"gb-sct","Australia":"au","Turquía":"tr","Alemania":"de","Curazao":"cw","Países Bajos":"nl","Japón":"jp","Costa de Marfil":"ci","Ecuador":"ec","Suecia":"se","Túnez":"tn","España":"es","Islas de Cabo Verde":"cv","Bélgica":"be","Egipto":"eg","Arabia Saudí":"sa","Uruguay":"uy","RI de Irán":"ir","Nueva Zelanda":"nz","Francia":"fr","Senegal":"sn","Irak":"iq","Noruega":"no","Argentina":"ar","Argelia":"dz","Austria":"at","Jordania":"jo","Portugal":"pt","RD Congo":"cd","Inglaterra":"gb-eng","Croacia":"hr","Ghana":"gh","Panamá":"pa","Uzbekistán":"uz","Colombia":"co"
@@ -216,6 +248,7 @@ ${state==="live"?"EN DIRECTO":state==="done"?"Finalizado":"No iniciado"}
 
 <div class="info">Grupo ${m[4]} · ${m[5]}</div>
 <div class="ref" id="ref-${i}">Árbitro: ${data.referee||"Sin asignar"}</div>
+<div class="ref" id="varref-${i}">VAR: ${data.varReferee||"Sin asignar"}</div>
 
 <select id="refsel-${i}">
 <option disabled ${!data.referee?"selected":""}>Seleccionar árbitro</option>

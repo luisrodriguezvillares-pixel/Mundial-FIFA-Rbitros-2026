@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recuento Arbitral · FIFA World Cup 2026</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#0a0f1f;
+  color:white;
+}
+
+header{
+  background:#111b33;
+  padding:16px;
+  text-align:center;
+  font-weight:900;
+  letter-spacing:.5px;
+}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  padding:12px;
+  background:#0b1220;
+}
+
+.tab{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  font-weight:900;
+  cursor:pointer;
+  color:white;
+  background:#1e293b;
+}
+
+.tab.active{
+  background:#2563eb;
+}
+
+.container{
+  padding:12px;
+}
+
+h2{
+  font-size:18px;
+  margin:8px 0 12px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#111b33;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+th,td{
+  padding:10px;
+  font-size:13px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  text-align:left;
+}
+
+th{
+  background:#172554;
+  font-weight:900;
+}
+
+td.number{
+  text-align:center;
+  font-weight:900;
+}
+
+.empty{
+  margin-top:20px;
+  text-align:center;
+  opacity:.7;
+}
+
+.badge{
+  display:inline-block;
+  padding:3px 8px;
+  border-radius:999px;
+  background:#0b1220;
+  font-weight:800;
+}
+
+@media(max-width:700px){
+  th,td{
+    font-size:11px;
+    padding:8px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>📊 RECUENTO ARBITRAL · FIFA WORLD CUP 2026</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('principal')">Árbitros Principales</button>
+  <button class="tab" onclick="showTab('var')">VAR</button>
+</div>
+
+<div class="container">
+
+  <section id="principalSection">
+    <h2>Árbitros Principales</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Árbitro</th>
+          <th>Partidos pitados</th>
+          <th>Partidos</th>
+        </tr>
+      </thead>
+      <tbody id="principalTable"></tbody>
+    </table>
+    <div id="principalEmpty" class="empty"></div>
+  </section>
+
+  <section id="varSection" style="display:none">
+    <h2>VAR</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>VAR</th>
+          <th>Partidos en VAR</th>
+          <th>Partidos</th>
+        </tr>
+      </thead>
+      <tbody id="varTable"></tbody>
+    </table>
+    <div id="varEmpty" class="empty"></div>
+  </section>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAVCqC9XrDivMUCwjR-qAz97XHkBkF2Lf4",
+  authDomain: "mundial-fifa-arbitros-2026.firebaseapp.com",
+  databaseURL: "https://mundial-fifa-arbitros-2026-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mundial-fifa-arbitros-2026",
+  storageBucket: "mundial-fifa-arbitros-2026.firebasestorage.app",
+  messagingSenderId: "915513430296",
+  appId: "1:915513430296:web:6f3f4400e9b6e3dfb08e6d"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const matches=[
+const matches=[
+["jueves 11 junio 2026","México","21:00","Sudáfrica","A","Ciudad de México","not"],
+["viernes 12 junio 2026","República de Corea","04:00","Chequia","A","Guadalajara","not"],
+["viernes 12 junio 2026","Canadá","21:00","Bosnia y Herzegovina","B","Toronto","not"],
+["sábado 13 junio 2026","EE. UU.","03:00","Paraguay","D","Los Ángeles","not"],
+["sábado 13 junio 2026","Catar","21:00","Suiza","B","Bahía de San Francisco","not"],
+["domingo 14 junio 2026","Brasil","00:00","Marruecos","C","Nueva York","not"],
+["domingo 14 junio 2026","Haití","03:00","Escocia","C","Boston","not"],
+["domingo 14 junio 2026","Australia","06:00","Turquía","D","Vancouver","not"],
+["domingo 14 junio 2026","Alemania","19:00","Curazao","E","Houston","not"],
+["domingo 14 junio 2026","Países Bajos","22:00","Japón","F","Dallas","not"],
+["lunes 15 junio 2026","Costa de Marfil","01:00","Ecuador","E","Filadelfia","not"],
+["lunes 15 junio 2026","Suecia","04:00","Túnez","F","Monterrey","not"],
+["lunes 15 junio 2026","España","18:00","Islas de Cabo Verde","H","Atlanta","not"],
+["lunes 15 junio 2026","Bélgica","21:00","Egipto","G","Seattle","not"],
+["martes 16 junio 2026","Arabia Saudí","00:00","Uruguay","H","Miami","not"],
+["martes 16 junio 2026","RI de Irán","03:00","Nueva Zelanda","G","Los Ángeles","not"],
+["martes 16 junio 2026","Francia","21:00","Senegal","I","Nueva York","not"],
+["miércoles 17 junio 2026","Irak","00:00","Noruega","I","Boston","not"],
+["miércoles 17 junio 2026","Argentina","03:00","Argelia","J","Kansas City","not"],
+["miércoles 17 junio 2026","Austria","06:00","Jordania","J","Bahía de San Francisco","not"],
+["miércoles 17 junio 2026","Portugal","19:00","RD Congo","K","Houston","not"],
+["miércoles 17 junio 2026","Inglaterra","22:00","Croacia","L","Dallas","not"],
+["jueves 18 junio 2026","Ghana","01:00","Panamá","L","Toronto","not"],
+["jueves 18 junio 2026","Uzbekistán","04:00","Colombia","K","Ciudad de México","not"],
+["jueves 18 junio 2026","Chequia","18:00","Sudáfrica","A","Atlanta","not"],
+["jueves 18 junio 2026","Suiza","21:00","Bosnia y Herzegovina","B","Los Ángeles","not"],
+["viernes 19 junio 2026","Canadá","00:00","Catar","B","Vancouver","not"],
+["viernes 19 junio 2026","México","03:00","República de Corea","A","Guadalajara","not"],
+["viernes 19 junio 2026","EE. UU.","21:00","Australia","D","Seattle","not"],
+["sábado 20 junio 2026","Escocia","00:00","Marruecos","C","Boston","not"],
+["sábado 20 junio 2026","Brasil","02:30","Haití","C","Filadelfia","not"],
+["sábado 20 junio 2026","Turquía","05:00","Paraguay","D","Bahía de San Francisco","not"],
+["sábado 20 junio 2026","Países Bajos","19:00","Suecia","F","Houston","not"],
+["sábado 20 junio 2026","Alemania","22:00","Costa de Marfil","E","Toronto","not"],
+["domingo 21 junio 2026","Ecuador","02:00","Curazao","E","Kansas City","not"],
+["domingo 21 junio 2026","Túnez","06:00","Japón","F","Monterrey","not"],
+["domingo 21 junio 2026","España","18:00","Arabia Saudí","H","Atlanta","not"],
+["domingo 21 junio 2026","Bélgica","21:00","RI de Irán","G","Los Ángeles","not"],
+["lunes 22 junio 2026","Uruguay","00:00","Islas de Cabo Verde","H","Miami","not"],
+["lunes 22 junio 2026","Nueva Zelanda","03:00","Egipto","G","Vancouver","not"],
+["lunes 22 junio 2026","Argentina","19:00","Austria","J","Dallas","not"],
+["lunes 22 junio 2026","Francia","23:00","Irak","I","Filadelfia","not"],
+["martes 23 junio 2026","Noruega","02:00","Senegal","I","Nueva York","not"],
+["martes 23 junio 2026","Jordania","05:00","Argelia","J","Bahía de San Francisco","not"],
+["martes 23 junio 2026","Portugal","19:00","Uzbekistán","K","Houston","not"],
+["martes 23 junio 2026","Inglaterra","22:00","Ghana","L","Boston","not"],
+["miércoles 24 junio 2026","Panamá","01:00","Croacia","L","Toronto","not"],
+["miércoles 24 junio 2026","Colombia","04:00","RD Congo","K","Guadalajara","not"],
+["miércoles 24 junio 2026","Suiza","21:00","Canadá","B","Vancouver","not"],
+["miércoles 24 junio 2026","Bosnia y Herzegovina","21:00","Catar","B","Seattle","not"],
+["jueves 25 junio 2026","Escocia","00:00","Brasil","C","Miami","not"],
+["jueves 25 junio 2026","Marruecos","00:00","Haití","C","Atlanta","not"],
+["jueves 25 junio 2026","Chequia","03:00","México","A","Ciudad de México","not"],
+["jueves 25 junio 2026","Sudáfrica","03:00","República de Corea","A","Monterrey","not"],
+["jueves 25 junio 2026","Curazao","22:00","Costa de Marfil","E","Filadelfia","not"],
+["jueves 25 junio 2026","Ecuador","22:00","Alemania","E","Nueva York","not"],
+["viernes 26 junio 2026","Japón","01:00","Suecia","F","Dallas","not"],
+["viernes 26 junio 2026","Túnez","01:00","Países Bajos","F","Kansas City","not"],
+["viernes 26 junio 2026","Turquía","04:00","EE. UU.","D","Los Ángeles","not"],
+["viernes 26 junio 2026","Paraguay","04:00","Australia","D","Bahía de San Francisco","not"],
+["viernes 26 junio 2026","Noruega","21:00","Francia","I","Boston","not"],
+["viernes 26 junio 2026","Senegal","21:00","Irak","I","Toronto","not"],
+["sábado 27 junio 2026","Islas de Cabo Verde","02:00","Arabia Saudí","H","Houston","not"],
+["sábado 27 junio 2026","Uruguay","02:00","España","H","Guadalajara","not"],
+["sábado 27 junio 2026","Egipto","05:00","RI de Irán","G","Seattle","not"],
+["sábado 27 junio 2026","Nueva Zelanda","05:00","Bélgica","G","Vancouver","not"],
+["sábado 27 junio 2026","Panamá","23:00","Inglaterra","L","Nueva York","not"],
+["sábado 27 junio 2026","Croacia","23:00","Ghana","L","Filadelfia","not"],
+["domingo 28 junio 2026","Colombia","01:30","Portugal","K","Miami","not"],
+["domingo 28 junio 2026","RD Congo","01:30","Uzbekistán","K","Atlanta","not"],
+["domingo 28 junio 2026","Argelia","04:00","Austria","J","Kansas City","not"],
+["domingo 28 junio 2026","Jordania","04:00","Argentina","J","Dallas","not"]
+];
+function matchName(i){
+  if(!matches[i]) return "Partido " + (Number(i)+1);
+  return matches[i][1] + " - " + matches[i][3];
+}
+
+function contar(data, campo){
+  const resumen = {};
+
+  Object.keys(data).forEach(i=>{
+    const item = data[i];
+    if(!item || !item[campo]) return;
+
+    const nombre = item[campo];
+
+    if(!resumen[nombre]){
+      resumen[nombre] = {
+        nombre:nombre,
+        total:0,
+        partidos:[]
+      };
+    }
+
+    resumen[nombre].total++;
+    resumen[nombre].partidos.push(matchName(i));
+  });
+
+  return Object.values(resumen).sort((a,b)=>b.total-a.total || a.nombre.localeCompare(b.nombre));
+}
+
+function renderTable(id, emptyId, datos){
+  const tbody = document.getElementById(id);
+  const empty = document.getElementById(emptyId);
+
+  tbody.innerHTML = "";
+
+  if(datos.length===0){
+    empty.textContent = "Todavía no hay datos guardados.";
+    return;
+  }
+
+  empty.textContent = "";
+
+  datos.forEach((item,index)=>{
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${index+1}</td>
+      <td><strong>${item.nombre}</strong></td>
+      <td class="number"><span class="badge">${item.total}</span></td>
+      <td>${item.partidos.join("<br>")}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+function loadData(){
+  db.ref("matchCenterData").on("value", snapshot=>{
+    const data = snapshot.val() || {};
+
+    const principales = contar(data, "referee");
+    const vars = contar(data, "varReferee");
+
+    renderTable("principalTable","principalEmpty",principales);
+    renderTable("varTable","varEmpty",vars);
+  });
+}
+
+function showTab(tab){
+  const principal = document.getElementById("principalSection");
+  const varSec = document.getElementById("varSection");
+  const buttons = document.querySelectorAll(".tab");
+
+  buttons.forEach(b=>b.classList.remove("active"));
+
+  if(tab==="principal"){
+    principal.style.display="block";
+    varSec.style.display="none";
+    buttons[0].classList.add("active");
+  }else{
+    principal.style.display="none";
+    varSec.style.display="block";
+    buttons[1].classList.add("active");
+  }
+}
+
+loadData();
+</script>
+
+</body>
+</html>

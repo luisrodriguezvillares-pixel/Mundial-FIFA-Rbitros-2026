@@ -254,7 +254,10 @@ ${state==="live"?"EN DIRECTO":state==="done"?"Finalizado":"No iniciado"}
 <option disabled ${!data.referee?"selected":""}>Seleccionar árbitro</option>
 ${referees.map(r=>`<option ${data.referee===r?"selected":""}>${r}</option>`).join("")}
 </select>
-
+<select id="varsel-${i}">
+<option disabled ${!data.varReferee?"selected":""}>Seleccionar VAR</option>
+${varOfficials.map(v=>`<option ${data.varReferee===v?"selected":""}>${v}</option>`).join("")}
+</select>
 <select id="statesel-${i}">
 <option value="not" ${state==="not"?"selected":""}>No iniciado</option>
 <option value="live" ${state==="live"?"selected":""}>En directo</option>
@@ -344,10 +347,12 @@ function apply(i){
 function clearRef(i){
 saved[i]=saved[i]||{};
 saved[i].referee="";
+saved[i].varReferee="";
 saved[i].state="not";
 save();
 
 document.getElementById("ref-"+i).textContent="Árbitro: Sin asignar";
+document.getElementById("varref-"+i).textContent="VAR: Sin asignar";
 document.getElementById("statesel-"+i).value="not";
 document.getElementById("state-"+i).className="state";
 document.getElementById("state-"+i).textContent="No iniciado";

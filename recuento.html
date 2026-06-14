@@ -163,7 +163,6 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 const matches=[
-const matches=[
 ["jueves 11 junio 2026","México","21:00","Sudáfrica","A","Ciudad de México","not"],
 ["viernes 12 junio 2026","República de Corea","04:00","Chequia","A","Guadalajara","not"],
 ["viernes 12 junio 2026","Canadá","21:00","Bosnia y Herzegovina","B","Toronto","not"],
@@ -238,7 +237,10 @@ const matches=[
 ["domingo 28 junio 2026","Jordania","04:00","Argentina","J","Dallas","not"]
 ];
 function matchName(i){
-  if(!matches[i]) return "Partido " + (Number(i)+1);
+  if(!matches[i]){
+    return "Partido " + (Number(i)+1) + " del Match Center";
+  }
+
   return matches[i][1] + " - " + matches[i][3];
 }
 

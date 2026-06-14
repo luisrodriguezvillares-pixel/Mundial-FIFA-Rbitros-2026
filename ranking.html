@@ -108,19 +108,10 @@ function crearRanking(saved){
     if(!data) return;
     if(!data.referee) return;
 
-    const tieneNota =
-      data.notaHTML ||
-      data.personal ||
-      data.menores ||
-      data.importantes ||
-      data.graves ||
-      data.penaltis ||
-      data.rojas ||
-      data.amarillaBien;
-
+    const tieneNota = data.final !== undefined || data.notaHTML;
     if(!tieneNota) return;
 
-    const nota = calcularFinal(data);
+    const nota = data.final !== undefined ? Number(data.final) : calcularFinal(data);
 
     if(!refs[data.referee]){
       refs[data.referee] = {
@@ -146,7 +137,10 @@ function crearRanking(saved){
       mejor:d.mejor,
       peor:d.peor
     };
-  }).sort((a,b)=>b.media-a.media);
+  }).sort((a,b)=>{
+    if(b.media !== a.media) return b.media - a.media;
+    return b.pj - a.pj;
+  });
 
   const tbody = document.getElementById("rankingBody");
   const empty = document.getElementById("emptyMsg");
@@ -175,7 +169,6 @@ function crearRanking(saved){
     `;
   }).join("");
 }
-
 db.ref("matchCenterData").on("value", snapshot=>{
   const data = snapshot.val() || {};
   crearRanking(data);

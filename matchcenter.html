@@ -420,14 +420,26 @@ ${state==="live"?"EN DIRECTO":state==="done"?"Finalizado":"No iniciado"}
 <div class="ref" id="ref-${i}">Árbitro: ${data.referee||"Sin asignar"}</div>
 <div class="ref" id="varref-${i}">VAR: ${data.varReferee||"Sin asignar"}</div>
 
-<select id="refsel-${i}">
-<option disabled ${!data.referee?"selected":""}>Seleccionar árbitro</option>
-${referees.map(r=>`<option ${data.referee===r?"selected":""}>${r}</option>`).join("")}
-</select>
-<select id="varsel-${i}">
-<option disabled ${!data.varReferee?"selected":""}>Seleccionar VAR</option>
-${varOfficials.map(v=>`<option ${data.varReferee===v?"selected":""}>${v}</option>`).join("")}
-</select>
+<input
+  id="refsel-${i}"
+  list="referees-list"
+  placeholder="Buscar o seleccionar árbitro"
+  value="${data.referee || ""}"
+>
+
+<datalist id="referees-list">
+  ${referees.map(r => `<option value="${r}">`).join("")}
+</datalist>
+<input
+  id="varsel-${i}"
+  list="var-list"
+  placeholder="Buscar o seleccionar VAR"
+  value="${data.varReferee || ""}"
+>
+
+<datalist id="var-list">
+  ${varOfficials.map(v => `<option value="${v}">`).join("")}
+</datalist>
 <select id="statesel-${i}">
 <option value="not" ${state==="not"?"selected":""}>No iniciado</option>
 <option value="live" ${state==="live"?"selected":""}>En directo</option>

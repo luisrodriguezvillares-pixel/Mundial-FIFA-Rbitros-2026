@@ -199,7 +199,16 @@ input{
   font-weight:800;
   color:#93c5fd;
 }
-
+.roundTitle{
+  grid-column:1/-1;
+  background:#2563eb;
+  color:white;
+  text-align:center;
+  font-weight:900;
+  padding:10px;
+  border-radius:12px;
+  letter-spacing:1px;
+}
 @media(max-width:800px){
   .container{
     grid-template-columns:1fr;
@@ -511,7 +520,15 @@ function loadData(){
 
 function render(){
 container.innerHTML="";
+let title16Added=false;
 matches.forEach((m,i)=>{
+if(m[4]==="16avos" && !title16Added){
+  const title=document.createElement("div");
+  title.className="roundTitle";
+  title.textContent="16AVOS";
+  container.appendChild(title);
+  title16Added=true;
+}
 const data=saved[i]||{};
 const state=data.state||m[6];
 const card=document.createElement("div");

@@ -820,10 +820,15 @@ if(filter!=="all"){
 
 card.style.display=visible?"block":"none";
 });
-}
 
-card.style.display=visible?"block":"none";
-});
+const title=document.querySelector(".roundTitle");
+if(title){
+  const hay16Visibles=[...document.querySelectorAll(".match")]
+    .filter(card=>card.style.display!=="none")
+    .some(card=>card.querySelector(".info")?.textContent.includes("16avos"));
+
+  title.style.display=hay16Visibles?"block":"none";
+}
 }
 
 document.getElementById("search").addEventListener("input",applyFilters);

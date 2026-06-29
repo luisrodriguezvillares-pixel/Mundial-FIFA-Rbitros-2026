@@ -217,16 +217,13 @@ input{
 }
 
 .starBtn{
-  width:100%;
-  margin-top:6px;
-  padding:6px;
-  font-size:11px;
-  font-weight:900;
+  background:none;
   border:none;
-  border-radius:8px;
+  color:#facc15;
+  font-size:18px;
   cursor:pointer;
-  background:#facc15;
-  color:#111;
+  padding:0;
+  margin-left:6px;
 }
 
 @media(max-width:800px){
@@ -502,24 +499,24 @@ const matches=[
 ["domingo 28 junio 2026","Jordania","04:00","Argentina","J","Dallas","not"],
 
 // ===== 16AVOS =====
-["domingo 28 junio 2026","Sudáfrica","21:00","Canadá","16avos","Por definir","not"],
-["lunes 29 junio 2026","Brasil","19:00","Japón","16avos","Por definir","not"],
-["lunes 29 junio 2026","Alemania","22:30","Paraguay","16avos","Por definir","not"],
-["martes 30 junio 2026","Países Bajos","03:00","Marruecos","16avos","Por definir","not"],
-["martes 30 junio 2026","Costa de Marfil","19:00","Noruega","16avos","Por definir","not"],
-["martes 30 junio 2026","Francia","23:00","Suecia","16avos","Por definir","not"],
-["miércoles 1 julio 2026","México","03:00","Ecuador","16avos","Por definir","not"],
-["miércoles 1 julio 2026","Inglaterra","18:00","RD Congo","16avos","Por definir","not"],
-["miércoles 1 julio 2026","Bélgica","22:00","Senegal","16avos","Por definir","not"],
-["jueves 2 julio 2026","EE. UU.","02:00","Bosnia y Herzegovina","16avos","Por definir","not"],
-["jueves 2 julio 2026","España","21:00","Austria","16avos","Por definir","not"],
-["viernes 3 julio 2026","Portugal","01:00","Croacia","16avos","Por definir","not"],
-["viernes 3 julio 2026","Suiza","05:00","Argelia","16avos","Por definir","not"],
-["viernes 3 julio 2026","Australia","20:00","Egipto","16avos","Por definir","not"],
-["sábado 4 julio 2026","Argentina","00:00","Islas de Cabo Verde","16avos","Por definir","not"],
-["sábado 4 julio 2026","Colombia","03:30","Ghana","16avos","Por definir","not"]
-];
-
+["domingo 28 junio 2026","Sudáfrica","21:00","Canadá","16avos","📍 Los Angeles Stadium","not"],
+["lunes 29 junio 2026","Brasil","19:00","Japón","16avos","📍 Houston Stadium","not"],
+["lunes 29 junio 2026","Alemania","22:30","Paraguay","16avos","📍 Boston Stadium","not"],
+["martes 30 junio 2026","Países Bajos","03:00","Marruecos","16avos","📍 Monterrey Stadium","not"],
+["martes 30 junio 2026","Costa de Marfil","19:00","Noruega","16avos","📍 Seattle Stadium","not"],
+["martes 30 junio 2026","Francia","23:00","Suecia","16avos","📍 New York New Jersey Stadium","not"],
+["miércoles 1 julio 2026","México","03:00","Ecuador","16avos","📍 Mexico City Stadium","not"],
+["miércoles 1 julio 2026","Inglaterra","18:00","RD Congo","16avos","📍 Atlanta Stadium","not"],
+["miércoles 1 julio 2026","Bélgica","22:00","Senegal","16avos","📍 Dallas Stadium","not"],
+["jueves 2 julio 2026","EE. UU.","02:00","Bosnia y Herzegovina","16avos","📍 Philadelphia Stadium","not"],
+["jueves 2 julio 2026","España","21:00","Austria","16avos","📍 Kansas City Stadium","not"],
+["viernes 3 julio 2026","Portugal","01:00","Croacia","16avos","📍 Toronto Stadium","not"],
+["viernes 3 julio 2026","Suiza","05:00","Argelia","16avos","📍 San Francisco Bay Area Stadium","not"],
+["viernes 3 julio 2026","Australia","20:00","Egipto","16avos","📍 Vancouver Stadium","not"],
+["sábado 4 julio 2026","Argentina","00:00","Islas de Cabo Verde","16avos","📍 Miami Stadium","not"],
+["sábado 4 julio 2026","Colombia","03:30","Ghana","16avos","📍 Guadalajara Stadium","not"]
+};
+  
 let saved={};
 const container=document.getElementById("matches");
 
@@ -564,7 +561,7 @@ ${state==="live"?"EN DIRECTO":state==="done"?"Finalizado":"No iniciado"}
 
 <div class="teams">
 <div class="team"><img class="flag" src="https://flagcdn.com/w20/${flag(m[1])}.png">${m[1]}</div>
-<div class="hour">${m[2]}</div>
+<div class="hour">${m[2]} <button class="starBtn" onclick="toggleFeatured(${i})">${data.featured ? "⭐" : "☆"}</button></div>
 <div class="team"><img class="flag" src="https://flagcdn.com/w20/${flag(m[3])}.png">${m[3]}</div>
 </div>
 
@@ -604,9 +601,6 @@ ${state==="live"?"EN DIRECTO":state==="done"?"Finalizado":"No iniciado"}
 </div>
 
 <button class="liveBtn" id="live-${i}" style="display:${state==="live"?"block":"none"}" onclick="openMatch()">📺 Ver en directo</button>
-<button class="starBtn" onclick="toggleFeatured(${i})">
-${data.featured ? "⭐ Partido destacado" : "☆ Marcar destacado"}
-</button>
 <button class="evalBtn" onclick="toggleEval(${i})">Valorar partido</button>
 
 <div class="evalPanel" id="eval-${i}">

@@ -95,7 +95,14 @@ header{
   border-radius:6px;
   background:rgba(255,255,255,.08);
 }
-
+.favorite{
+  position:absolute;
+  top:8px;
+  left:8px;
+  font-size:20px;
+  cursor:pointer;
+  user-select:none;
+}
 .state.live{
   color:#ff3b30;
 }
@@ -214,16 +221,6 @@ input{
 .match.featured{
   border:2px solid #ffd700;
   box-shadow:0 0 12px rgba(255,215,0,.35);
-}
-
-.starBtn{
-  background:none;
-  border:none;
-  color:#facc15;
-  font-size:18px;
-  cursor:pointer;
-  padding:0;
-  margin-left:6px;
 }
 
 @media(max-width:800px){
@@ -553,6 +550,10 @@ const card=document.createElement("div");
 card.className = data.featured ? "match featured" : "match";
 
 card.innerHTML=`
+<div class="favorite" onclick="toggleFeatured(${i})">
+${data.featured ? "⭐" : "☆"}
+</div>
+
 <div class="state ${state==="live"?"live":state==="done"?"done":""}" id="state-${i}">
 ${state==="live"?"EN DIRECTO":state==="done"?"Finalizado":"No iniciado"}
 </div>
@@ -561,7 +562,7 @@ ${state==="live"?"EN DIRECTO":state==="done"?"Finalizado":"No iniciado"}
 
 <div class="teams">
 <div class="team"><img class="flag" src="https://flagcdn.com/w20/${flag(m[1])}.png">${m[1]}</div>
-<div class="hour">${m[2]} <button class="starBtn" onclick="toggleFeatured(${i})">${data.featured ? "⭐" : "☆"}</button></div>
+<div class="hour">${m[2]}</div>
 <div class="team"><img class="flag" src="https://flagcdn.com/w20/${flag(m[3])}.png">${m[3]}</div>
 </div>
 

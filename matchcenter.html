@@ -99,15 +99,17 @@ header{
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:2px;
+    justify-content:center;
+    gap:1px;
     min-width:55px;
 }
 
 .favorite{
-    font-size:18px;
+    font-size:16px;
     cursor:pointer;
     user-select:none;
     line-height:1;
+    margin-bottom:-2px;
 }
 
 .hour{
@@ -562,10 +564,6 @@ const card=document.createElement("div");
 card.className = data.featured ? "match featured" : "match";
 
 card.innerHTML=`
-<div class="favorite" onclick="toggleFeatured(${i})">
-${data.featured ? "⭐" : "☆"}
-</div>
-
 <div class="state ${state==="live"?"live":state==="done"?"done":""}" id="state-${i}">
 ${state==="live"?"EN DIRECTO":state==="done"?"Finalizado":"No iniciado"}
 </div>
@@ -578,11 +576,13 @@ ${state==="live"?"EN DIRECTO":state==="done"?"Finalizado":"No iniciado"}
   </div>
 
   <div class="hourBlock">
-      <div class="favorite" onclick="toggleFeatured(${i})">
-          ${data.featured ? "⭐" : "☆"}
-      </div>
-      <div class="hour">${m[2]}</div>
-  </div>
+    <div class="favorite"
+         onclick="toggleFeatured(${i})"
+         title="Favorito">
+         ${data.featured ? "⭐" : "☆"}
+    </div>
+    <div class="hour">${m[2]}</div>
+</div>
 
   <div class="team">
     <img class="flag" src="https://flagcdn.com/w20/${flag(m[3])}.png">${m[3]}

@@ -641,7 +641,7 @@ ${state==="live"?"EN DIRECTO":state==="done"?"Finalizado":"No iniciado"}
 <div><label>Roja correcta</label><input id="rojas-${i}" type="number" min="0" value="${data.rojas||0}"></div>
 <div><label>Roja mal sacada</label><input id="rojaMal-${i}" type="number" min="0" value="${data.rojaMal||0}"></div>
 <div><label>Penalti correcto</label><input id="penaltis-${i}" type="number" min="0" value="${data.penaltis||0}"></div>
-<div><label>VAR correcto</label><input id="buenvar-${i}" type="number" min="0" value="${data.buenvar||0}"></div>
+<div><label>VAR corrige bien</label><input id="varGood-${i}" type="number" min="0" value="${data.varGood||0}"></div>
 <div><label>Ventaja excelente</label><input id="ventajas-${i}" type="number" min="0" value="${data.ventajas||0}"></div>
 <div><label>Control excelente</label><input id="control-${i}" type="number" min="0" value="${data.control||0}"></div>
 <div><label>Añadido correcto</label><input id="addedGood-${i}" type="number" min="0" value="${data.addedGood||0}"></div>
@@ -743,7 +743,7 @@ const amarillaBien=Number(document.getElementById("amarillaBien-"+i).value)||0;
 const rojas=Number(document.getElementById("rojas-"+i).value)||0;
 const rojaMal=Number(document.getElementById("rojaMal-"+i).value)||0;
 const penaltis=Number(document.getElementById("penaltis-"+i).value)||0;
-const buenvar=Number(document.getElementById("buenvar-"+i).value)||0;
+const varGood=Number(document.getElementById("varGood-"+i).value)||0;
 const ventajas=Number(document.getElementById("ventajas-"+i).value)||0;
 const control=Number(document.getElementById("control-"+i).value)||0;
 const addedGood=Number(document.getElementById("addedGood-"+i).value)||0;
@@ -753,14 +753,14 @@ let auto=10;
 auto-=menores*0.20;
 auto-=importantes*0.70;
 auto-=graves*1.50;
-auto-=varError*0.70;
+// El error VAR no resta al árbitro principal
 auto-=gestion*0.50;
 auto-=amarillaMal*0.30;
 auto+=amarillaBien*0.30;
 auto+=rojas*0.70;
 auto-=rojaMal*1.50;
 auto+=penaltis*0.70;
-auto+=buenvar*0.30;
+// El buen VAR no suma al árbitro principal
 auto+=ventajas*0.20;
 auto+=control*0.50;
 auto+=addedGood*0.20;
@@ -781,7 +781,7 @@ document.getElementById("nota-"+i).innerHTML=notaHTML;
 saved[i]=saved[i]||{};
 Object.assign(saved[i],{
 personal,varReviews,menores,importantes,graves,varError,gestion,
-amarillaMal,amarillaBien,rojas,rojaMal,penaltis,buenvar,
+amarillaMal,amarillaBien,rojas,rojaMal,penaltis,varGood,
 ventajas,control,addedGood,addedBad,auto,final,notaHTML
 });
 save();
@@ -803,6 +803,7 @@ function eliminarValoracion(i){
   delete saved[i].rojaMal;
   delete saved[i].penaltis;
   delete saved[i].buenvar;
+  delete saved[i].varGood;
   delete saved[i].ventajas;
   delete saved[i].control;
   delete saved[i].addedGood;

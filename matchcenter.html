@@ -562,6 +562,7 @@ function loadData(){
 function render(){
 container.innerHTML="";
 let title16Added=false;
+let title8Added=false;
 matches.forEach((m,i)=>{
 if(m[4]==="16avos" && !title16Added){
   const title=document.createElement("div");
@@ -569,6 +570,13 @@ if(m[4]==="16avos" && !title16Added){
   title.textContent="16AVOS";
   container.appendChild(title);
   title16Added=true;
+}
+  if(m[4]==="octavos" && !title8Added){
+  const title=document.createElement("div");
+  title.className="roundTitle octavos";
+  title.textContent="OCTAVOS DE FINAL";
+  container.appendChild(title);
+  title8Added=true;
 }
 const data=saved[i]||{};
 const state=data.state||m[6];

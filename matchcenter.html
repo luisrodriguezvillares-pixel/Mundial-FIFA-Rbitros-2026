@@ -273,7 +273,10 @@ input{
 <option value="K">Grupo K</option>
 <option value="L">Grupo L</option>
 <option value="16avos">16avos</option>
-<option value="octavos">Octavos</option>
+<option value="octavos">Octavos de Final</option>
+<option value="Cuartos">Cuartos de Final</option>
+<option value="Semis">Semifinales</option>
+<option value="FINAL">FINAL</option>
 </select>
 </div>
 
@@ -530,7 +533,8 @@ const matches=[
 ["viernes 3 julio 2026","Australia","20:00","Egipto","16avos","📍 Vancouver Stadium","not"],
 ["sábado 4 julio 2026","Argentina","00:00","Islas de Cabo Verde","16avos","📍 Miami Stadium","not"],
 ["sábado 4 julio 2026","Colombia","03:30","Ghana","16avos","📍 Guadalajara Stadium","not"],
-// ===== OCTAVOS =====
+
+// ===== OCTAVOS DE FINAL =====
 ["domingo 5 julio 2026","Canadá","19:00","Marruecos","octavos","📍 NRG Stadium","not"],
 ["domingo 5 julio 2026","Paraguay","23:00","Francia","octavos","📍 Lincoln Financial Field","not"],
 ["domingo 5 julio 2026","Brasil","22:00","Noruega","octavos","📍 MetLife Stadium","not"],
@@ -538,7 +542,20 @@ const matches=[
 ["lunes 6 julio 2026","Portugal","21:00","España","octavos","📍 AT&T Stadium","not"],
 ["martes 7 julio 2026","EE. UU.","02:00","Bélgica","octavos","📍 Lumen Field","not"],
 ["martes 7 julio 2026","Argentina","18:00","Egipto","octavos","📍 Mercedes-Benz Stadium","not"],
-["martes 7 julio 2026","Suiza","22:00","Colombia","octavos","📍 BC Place","not"]
+["martes 7 julio 2026","Suiza","22:00","Colombia","octavos","📍 BC Place","not"],
+
+  // ===== CUARTOS DE FINAL =====
+["jueves 9 julio 2026","Francia","22:00","Marruecos","Cuartos","📍 Gillette Stadium","not"],
+["viernes 10 julio 2026","España","21:00","Bélgica","Cuartos","📍 SoFi Stadium","not"],
+["sábado 11 julio 2026","Noruega","23:00","Inglaterra","Cuartos","📍 Hard Rock Stadium","not"],
+["domingo 12 julio 2026","Argentina","03:00","Colombia","Cuartos","📍 GEHA Field at Arrowhead Stadium","not"],
+
+  // ===== SEMIFINALES =====
+["martes 14 julio 2026","","","","Semis","","not"],
+["miércoles 15 julio 2026","","","","Semis","","not"],
+
+// ===== FINAL =====
+["domingo 19 julio 2026","","","","FINAL","","not"]
 ];
   
 let saved={};
@@ -564,6 +581,9 @@ function render(){
 container.innerHTML="";
 let title16Added=false;
 let title8Added=false;
+let titleQuarterAdded=false;
+let titleSemiAdded=false;
+let titleFinalAdded=false;
 matches.forEach((m,i)=>{
 if(m[4]==="16avos" && !title16Added){
   const title=document.createElement("div");
@@ -578,6 +598,31 @@ if(m[4]==="16avos" && !title16Added){
   title.textContent="OCTAVOS DE FINAL";
   container.appendChild(title);
   title8Added=true;
+}
+  if(m[4]==="Cuartos" && !titleQuarterAdded){
+    const title=document.createElement("div");
+    title.className="roundTitle";
+    title.style.background="#d32f2f";
+    title.textContent="CUARTOS DE FINAL";
+    container.appendChild(title);
+    titleQuarterAdded=true;
+}
+  if(m[4]==="Semis" && !titleSemiAdded){
+    const title=document.createElement("div");
+    title.className="roundTitle";
+    title.style.background="#025e30";
+    title.textContent="SEMIFINALES";
+    container.appendChild(title);
+    titleSemiAdded=true;
+}
+
+if(m[4]==="FINAL" && !titleFinalAdded){
+    const title=document.createElement("div");
+    title.className="roundTitle";
+    title.style.background="linear-gradient(90deg,#003b8e,#d4af37)";
+    title.textContent="FINAL";
+    container.appendChild(title);
+    titleFinalAdded=true;
 }
 const data=saved[i]||{};
 const state=data.state||m[6];
@@ -861,14 +906,22 @@ if(filter!=="all"){
 card.style.display=visible?"block":"none";
 });
 
-const title=document.querySelector(".roundTitle");
-if(title){
-  const hay16Visibles=[...document.querySelectorAll(".match")]
-    .filter(card=>card.style.display!=="none")
-    .some(card=>card.querySelector(".info")?.textContent.includes("16avos"));
+document.querySelectorAll(".roundTitle").forEach(title=>{
+  const texto=title.textContent;
 
-  title.style.display=hay16Visibles?"block":"none";
-}
+  let ronda="";
+ if(texto.includes("16AVOS")) ronda="16avos";
+if(texto.includes("OCTAVOS")) ronda="octavos";
+if(texto.includes("CUARTOS")) ronda="Cuartos";
+if(texto.includes("SEMIFINALES")) ronda="Semis";
+if(texto.includes("FINAL")) ronda="FINAL";
+
+  const visible=[...document.querySelectorAll(".match")]
+    .filter(card=>card.style.display!=="none")
+    .some(card=>card.querySelector(".info")?.textContent.includes(ronda));
+
+  title.style.display=visible?"block":"none";
+});
 }
 
 document.getElementById("search").addEventListener("input",applyFilters);

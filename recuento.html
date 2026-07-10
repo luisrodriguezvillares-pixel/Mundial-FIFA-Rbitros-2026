@@ -321,8 +321,50 @@ const matches=[
 ["domingo 28 junio 2026","Colombia","01:30","Portugal","K","Miami","not"],
 ["domingo 28 junio 2026","RD Congo","01:30","Uzbekistán","K","Atlanta","not"],
 ["domingo 28 junio 2026","Argelia","04:00","Austria","J","Kansas City","not"],
-["domingo 28 junio 2026","Jordania","04:00","Argentina","J","Dallas","not"]
+["domingo 28 junio 2026","Jordania","04:00","Argentina","J","Dallas","not"],
+
+// ===== 16AVOS =====
+["domingo 28 junio 2026","Sudáfrica","21:00","Canadá","16avos","📍 Los Angeles Stadium","not"],
+["lunes 29 junio 2026","Brasil","19:00","Japón","16avos","📍 Houston Stadium","not"],
+["lunes 29 junio 2026","Alemania","22:30","Paraguay","16avos","📍 Boston Stadium","not"],
+["martes 30 junio 2026","Países Bajos","03:00","Marruecos","16avos","📍 Monterrey Stadium","not"],
+["martes 30 junio 2026","Costa de Marfil","19:00","Noruega","16avos","📍 Seattle Stadium","not"],
+["martes 30 junio 2026","Francia","23:00","Suecia","16avos","📍 New York New Jersey Stadium","not"],
+["miércoles 1 julio 2026","México","03:00","Ecuador","16avos","📍 Mexico City Stadium","not"],
+["miércoles 1 julio 2026","Inglaterra","18:00","RD Congo","16avos","📍 Atlanta Stadium","not"],
+["miércoles 1 julio 2026","Bélgica","22:00","Senegal","16avos","📍 Dallas Stadium","not"],
+["jueves 2 julio 2026","EE. UU.","02:00","Bosnia y Herzegovina","16avos","📍 Philadelphia Stadium","not"],
+["jueves 2 julio 2026","España","21:00","Austria","16avos","📍 Kansas City Stadium","not"],
+["viernes 3 julio 2026","Portugal","01:00","Croacia","16avos","📍 Toronto Stadium","not"],
+["viernes 3 julio 2026","Suiza","05:00","Argelia","16avos","📍 San Francisco Bay Area Stadium","not"],
+["viernes 3 julio 2026","Australia","20:00","Egipto","16avos","📍 Vancouver Stadium","not"],
+["sábado 4 julio 2026","Argentina","00:00","Islas de Cabo Verde","16avos","📍 Miami Stadium","not"],
+["sábado 4 julio 2026","Colombia","03:30","Ghana","16avos","📍 Guadalajara Stadium","not"],
+
+// ===== OCTAVOS DE FINAL =====
+["domingo 5 julio 2026","Canadá","19:00","Marruecos","octavos","📍 NRG Stadium","not"],
+["domingo 5 julio 2026","Paraguay","23:00","Francia","octavos","📍 Lincoln Financial Field","not"],
+["domingo 5 julio 2026","Brasil","22:00","Noruega","octavos","📍 MetLife Stadium","not"],
+["lunes 6 julio 2026","México","02:00","Inglaterra","octavos","📍 Estadio Azteca","not"],
+["lunes 6 julio 2026","Portugal","21:00","España","octavos","📍 AT&T Stadium","not"],
+["martes 7 julio 2026","EE. UU.","02:00","Bélgica","octavos","📍 Lumen Field","not"],
+["martes 7 julio 2026","Argentina","18:00","Egipto","octavos","📍 Mercedes-Benz Stadium","not"],
+["martes 7 julio 2026","Suiza","22:00","Colombia","octavos","📍 BC Place","not"],
+
+  // ===== CUARTOS DE FINAL =====
+["jueves 9 julio 2026","Francia","22:00","Marruecos","Cuartos","📍 Gillette Stadium","not"],
+["viernes 10 julio 2026","España","21:00","Bélgica","Cuartos","📍 SoFi Stadium","not"],
+["sábado 11 julio 2026","Noruega","23:00","Inglaterra","Cuartos","📍 Hard Rock Stadium","not"],
+["domingo 12 julio 2026","Argentina","03:00","Suiza","Cuartos","📍 GEHA Field at Arrowhead Stadium","not"],
+  
+  // ===== SEMIFINALES =====
+["martes 14 julio 2026","","","","Semis","","not"],
+["miércoles 15 julio 2026","","","","Semis","","not"],
+
+// ===== FINAL =====
+["domingo 19 julio 2026","","","","FINAL","","not"]
 ];
+
 function matchName(i){
   if(!matches[i]){
     return "Partido " + (Number(i)+1) + " del Match Center";
@@ -423,8 +465,8 @@ function loadData(){
       const data = snapshot.val();
 
       if(data){
-        const principales = contar(data, "referee");
-        const vars = contar(data, "varReferee");
+        const principales = contar(data, "referee", referees);
+        const vars = contar(data, "varReferee", varOfficials);
 
         renderTable("principalTable","principalEmpty",principales);
         renderTable("varTable","varEmpty",vars);

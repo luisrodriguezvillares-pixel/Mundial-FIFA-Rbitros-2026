@@ -71,15 +71,16 @@ function calcularFinal(data){
   auto -= (Number(data.menores) || 0) * 0.20;
   auto -= (Number(data.importantes) || 0) * 0.70;
   auto -= (Number(data.graves) || 0) * 1.50;
-  auto -= (Number(data.varError) || 0) * 0.70;
+
+  // Los errores del VAR no restan al árbitro principal
   auto -= (Number(data.gestion) || 0) * 0.50;
   auto -= (Number(data.amarillaMal) || 0) * 0.30;
-
   auto += (Number(data.amarillaBien) || 0) * 0.30;
   auto += (Number(data.rojas) || 0) * 0.70;
   auto -= (Number(data.rojaMal) || 0) * 1.50;
   auto += (Number(data.penaltis) || 0) * 0.70;
-  auto += (Number(data.buenvar) || 0) * 0.30;
+
+  // El VAR corrige bien, pero no suma al árbitro principal
   auto += (Number(data.ventajas) || 0) * 0.20;
   auto += (Number(data.control) || 0) * 0.50;
   auto += (Number(data.addedGood) || 0) * 0.20;
@@ -88,9 +89,10 @@ function calcularFinal(data){
   auto = Math.max(0, Math.min(10, auto));
 
   const personal = Number(data.personal) || 0;
-  const final = personal ? (personal * 0.6 + auto * 0.4) : auto;
 
-  return final;
+  return personal
+    ? (personal * 0.65 + auto * 0.35)
+    : auto;
 }
 
 function indice(media){
@@ -105,42 +107,68 @@ function crearRanking(saved){
   const refs = {};
 
   Object.values(saved || {}).forEach(data=>{
-    if(!data) return;
-    if(!data.referee) return;
+    if(!data || !data.referee) return;
 
-    const tieneNota = data.final !== undefined || data.notaHTML;
-    if(!tieneNota) return;
+    const tieneValoracion =
+      data.final !== undefined ||
+      data.notaHTML ||
+      data.personal !== undefined ||
+      data.menores !== undefined ||
+      data.importantes !== undefined ||
+      data.graves !== undefined ||
+      data.gestion !== undefined ||
+      data.amarillaMal !== undefined ||
+      data.amarillaBien !== undefined ||
+      data.rojas !== undefined ||
+      data.rojaMal !== undefined ||
+      data.penaltis !== undefined ||
+      data.ventajas !== undefined ||
+      data.control !== undefined ||
+      data.addedGood !== undefined ||
+      data.addedBad !== undefined;
 
-    const nota = data.final !== undefined ? Number(data.final) : calcularFinal(data);
+    if(!tieneValoracion) return;
+
+    const nota = calcularFinal(data);
+
+    if(!Number.isFinite(nota)) return;
 
     if(!refs[data.referee]){
       refs[data.referee] = {
         pj:0,
         suma:0,
-        mejor:0,
-        peor:10
+        mejor:-Infinity,
+        peor:Infinity
       };
     }
 
     refs[data.referee].pj++;
     refs[data.referee].suma += nota;
-    refs[data.referee].mejor = Math.max(refs[data.referee].mejor, nota);
-    refs[data.referee].peor = Math.min(refs[data.referee].peor, nota);
+    refs[data.referee].mejor =
+      Math.max(refs[data.referee].mejor, nota);
+    refs[data.referee].peor =
+      Math.min(refs[data.referee].peor, nota);
   });
 
-  const ranking = Object.entries(refs).map(([ref,d])=>{
-    const media = d.suma / d.pj;
-    return {
-      ref,
-      pj:d.pj,
-      media,
-      mejor:d.mejor,
-      peor:d.peor
-    };
-  }).sort((a,b)=>{
-    if(b.media !== a.media) return b.media - a.media;
-    return b.pj - a.pj;
-  });
+  const ranking = Object.entries(refs)
+    .map(([ref,d])=>{
+      const media = d.suma / d.pj;
+
+      return {
+        ref,
+        pj:d.pj,
+        media,
+        mejor:d.mejor,
+        peor:d.peor
+      };
+    })
+    .sort((a,b)=>{
+      if(b.media !== a.media){
+        return b.media - a.media;
+      }
+
+      return b.pj - a.pj;
+    });
 
   const tbody = document.getElementById("rankingBody");
   const empty = document.getElementById("emptyMsg");
@@ -157,18 +185,23 @@ function crearRanking(saved){
     const [text,cls] = indice(r.media);
 
     return `
-    <tr>
-      <td>${i+1}</td>
-      <td>${r.ref}</td>
-      <td>${r.pj}</td>
-      <td>${r.media.toFixed(2)}</td>
-      <td>${r.mejor.toFixed(1)}</td>
-      <td>${r.peor.toFixed(1)}</td>
-      <td><span class="badge ${cls}">${text}</span></td>
-    </tr>
+      <tr>
+        <td>${i+1}</td>
+        <td>${r.ref}</td>
+        <td>${r.pj}</td>
+        <td>${r.media.toFixed(2)}</td>
+        <td>${r.mejor.toFixed(1)}</td>
+        <td>${r.peor.toFixed(1)}</td>
+        <td>
+          <span class="badge ${cls}">
+            ${text}
+          </span>
+        </td>
+      </tr>
     `;
   }).join("");
 }
+
 db.ref("matchCenterData").on("value", snapshot=>{
   const data = snapshot.val() || {};
   crearRanking(data);

@@ -203,10 +203,37 @@ const nota = data.final !== undefined
   }).join("");
 }
 
-db.ref("matchCenterData").on("value", snapshot=>{
-  const data = snapshot.val() || {};
+function cargarRankingLocal(){
+  const data = JSON.parse(
+    localStorage.getItem("matchCenterData") || "{}"
+  );
+
   crearRanking(data);
-});
+}
+
+db.ref("matchCenterData").on(
+  "value",
+  snapshot=>{
+    const data = snapshot.val();
+
+    if(data){
+      crearRanking(data);
+    }else{
+      cargarRankingLocal();
+    }
+  },
+  error=>{
+    console.error("Error de Firebase:", error);
+    cargarRankingLocal();
+
+    const empty = document.getElementById("emptyMsg");
+
+    if(empty && empty.textContent === "Cargando ranking..."){
+      empty.textContent =
+        "No se han podido leer los datos de Firebase.";
+    }
+  }
+);
 </script>
 
 </body>

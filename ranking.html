@@ -129,8 +129,9 @@ function crearRanking(saved){
 
     if(!tieneValoracion) return;
 
-    const nota = calcularFinal(data);
-
+const nota = data.final !== undefined
+  ? Number(data.final)
+  : calcularFinal(data);
     if(!Number.isFinite(nota)) return;
 
     if(!refs[data.referee]){

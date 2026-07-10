@@ -412,13 +412,6 @@ function contar(data, campo, listaCompleta){
   });
 }
 
-    resumen[nombre].total++;
-    resumen[nombre].partidos.push(matchName(i));
-  });
-
-  return Object.values(resumen).sort((a,b)=>b.total-a.total || a.nombre.localeCompare(b.nombre));
-}
-
 function renderTable(id, emptyId, datos){
   const tbody = document.getElementById(id);
   const empty = document.getElementById(emptyId);

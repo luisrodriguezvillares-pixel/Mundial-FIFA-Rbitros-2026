@@ -295,16 +295,50 @@ function renderTable(id, emptyId, datos){
   });
 }
 
+function cargarRecuentoLocal(){
+  const data = JSON.parse(
+    localStorage.getItem("matchCenterData") || "{}"
+  );
+
+  const principales = contar(data, "referee");
+  const vars = contar(data, "varReferee");
+
+  renderTable("principalTable","principalEmpty",principales);
+  renderTable("varTable","varEmpty",vars);
+}
+
 function loadData(){
-  db.ref("matchCenterData").on("value", snapshot=>{
-    const data = snapshot.val() || {};
+  db.ref("matchCenterData").on(
+    "value",
+    snapshot=>{
+      const data = snapshot.val();
 
-    const principales = contar(data, "referee");
-    const vars = contar(data, "varReferee");
+      if(data){
+        const principales = contar(data, "referee");
+        const vars = contar(data, "varReferee");
 
-    renderTable("principalTable","principalEmpty",principales);
-    renderTable("varTable","varEmpty",vars);
-  });
+        renderTable("principalTable","principalEmpty",principales);
+        renderTable("varTable","varEmpty",vars);
+      }else{
+        cargarRecuentoLocal();
+      }
+    },
+    error=>{
+      console.error("Error de Firebase:", error);
+      cargarRecuentoLocal();
+
+      const principalEmpty = document.getElementById("principalEmpty");
+      const varEmpty = document.getElementById("varEmpty");
+
+      if(principalEmpty && principalEmpty.textContent===""){
+        principalEmpty.textContent="No se han podido leer los datos de Firebase.";
+      }
+
+      if(varEmpty && varEmpty.textContent===""){
+        varEmpty.textContent="No se han podido leer los datos de Firebase.";
+      }
+    }
+  );
 }
 
 function showTab(tab){

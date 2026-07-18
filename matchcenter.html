@@ -276,6 +276,7 @@ input{
 <option value="octavos">Octavos de Final</option>
 <option value="Cuartos">Cuartos de Final</option>
 <option value="Semis">Semifinales</option>
+<option value="3º Puesto">3º y 4º puesto</option>
 <option value="FINAL">FINAL</option>
 </select>
 </div>
@@ -554,8 +555,11 @@ const matches=[
 ["martes 14 julio 2026","Francia","21:00","España","Semis","📍 AT&T Stadium","not"],
 ["miércoles 15 julio 2026","Inglaterra","21:00","Argentina","Semis","📍 Mercedes-Benz Stadium","not"],
 
+// ===== 3º Y 4º PUESTO =====
+["sábado 18 julio 2026","Inglaterra","23:00","Francia","3º Puesto","📍 Hard Rock Stadium","not"],
+
 // ===== FINAL =====
-["domingo 19 julio 2026","","","","FINAL","","not"]
+["domingo 19 julio 2026","España","21:00","Argentina","FINAL","📍 Meadowlands Stadium","not"]
 ];
   
 let saved={};
@@ -615,7 +619,15 @@ if(m[4]==="16avos" && !title16Added){
     container.appendChild(title);
     titleSemiAdded=true;
 }
-
+if(m[4]==="3º Puesto" && !titleThirdAdded){
+    const title=document.createElement("div");
+    title.className="roundTitle";
+    title.style.background="#8b5e3c";
+    title.textContent="3º Y 4º PUESTO";
+    container.appendChild(title);
+    titleThirdAdded=true;
+}
+let titleThirdAdded=false;
 if(m[4]==="FINAL" && !titleFinalAdded){
     const title=document.createElement("div");
     title.className="roundTitle";

@@ -582,52 +582,60 @@ function loadData(){
 }
 
 function render(){
-container.innerHTML="";
-let title16Added=false;
-let title8Added=false;
-let titleQuarterAdded=false;
-let titleSemiAdded=false;
-let titleThirdAdded=false;
-let titleFinalAdded=false;
-matches.forEach((m,i)=>{
-if(m[4]==="16avos" && !title16Added){
-  const title=document.createElement("div");
-  title.className="roundTitle";
-  title.textContent="16AVOS";
-  container.appendChild(title);
-  title16Added=true;
-}
-  if(m[4]==="octavos" && !title8Added){
-  const title=document.createElement("div");
-  title.className="roundTitle octavos";
-  title.textContent="OCTAVOS DE FINAL";
-  container.appendChild(title);
-  title8Added=true;
-}
-  if(m[4]==="Cuartos" && !titleQuarterAdded){
-    const title=document.createElement("div");
-    title.className="roundTitle";
-    title.style.background="#d32f2f";
-    title.textContent="CUARTOS DE FINAL";
-    container.appendChild(title);
-    titleQuarterAdded=true;
-}
-  if(m[4]==="Semis" && !titleSemiAdded){
-    const title=document.createElement("div");
-    title.className="roundTitle";
-    title.style.background="#025e30";
-    title.textContent="SEMIFINALES";
-    container.appendChild(title);
-    titleSemiAdded=true;
-}
-if(m[4]==="3º Puesto" && !titleThirdAdded){
-    const title=document.createElement("div");
-    title.className="roundTitle";
-    title.style.background="#8b5e3c";
-    title.textContent="3º Y 4º PUESTO";
-    container.appendChild(title);
-    titleThirdAdded=true;
-}
+  container.innerHTML="";
+
+  let title16Added=false;
+  let title8Added=false;
+  let titleQuarterAdded=false;
+  let titleSemiAdded=false;
+  let titleThirdAdded=false;
+  let titleFinalAdded=false;
+
+  matches.forEach((m,i)=>{
+
+    if(m[4]==="16avos" && !title16Added){
+      const title=document.createElement("div");
+      title.className="roundTitle";
+      title.textContent="16AVOS";
+      container.appendChild(title);
+      title16Added=true;
+    }
+
+    if(m[4]==="octavos" && !title8Added){
+      const title=document.createElement("div");
+      title.className="roundTitle octavos";
+      title.textContent="OCTAVOS DE FINAL";
+      container.appendChild(title);
+      title8Added=true;
+    }
+
+    if(m[4]==="Cuartos" && !titleQuarterAdded){
+      const title=document.createElement("div");
+      title.className="roundTitle";
+      title.style.background="#d32f2f";
+      title.textContent="CUARTOS DE FINAL";
+      container.appendChild(title);
+      titleQuarterAdded=true;
+    }
+
+    if(m[4]==="Semis" && !titleSemiAdded){
+      const title=document.createElement("div");
+      title.className="roundTitle";
+      title.style.background="#025e30";
+      title.textContent="SEMIFINALES";
+      container.appendChild(title);
+      titleSemiAdded=true;
+    }
+
+    if(m[4]==="3º Puesto" && !titleThirdAdded){
+      const title=document.createElement("div");
+      title.className="roundTitle";
+      title.style.background="#8b5e3c";
+      title.textContent="3º Y 4º PUESTO";
+      container.appendChild(title);
+      titleThirdAdded=true;
+    }
+
     if(m[4]==="FINAL" && !titleFinalAdded){
     const title=document.createElement("div");
     title.className="roundTitle";
@@ -636,7 +644,10 @@ if(m[4]==="3º Puesto" && !titleThirdAdded){
     container.appendChild(title);
     titleFinalAdded=true;
 }
-const data=saved[i]||{};
+
+const data = saved[i] || {};
+const state = data.state || m[6];
+    }
 const state=data.state||m[6];
 const card=document.createElement("div");
 card.className = data.featured ? "match featured" : "match";
@@ -927,7 +938,7 @@ if(texto.includes("OCTAVOS")) ronda="octavos";
 if(texto.includes("CUARTOS")) ronda="Cuartos";
 if(texto.includes("SEMIFINALES")) ronda="Semis";
 if(texto.includes("3º Y 4º")) ronda="3º Puesto";
-if(texto.includes("FINAL")) ronda="FINAL";
+if(texto==="FINAL") ronda="FINAL";
 
   const visible=[...document.querySelectorAll(".match")]
     .filter(card=>card.style.display!=="none")

@@ -587,6 +587,7 @@ let title16Added=false;
 let title8Added=false;
 let titleQuarterAdded=false;
 let titleSemiAdded=false;
+let titleThirdAdded=false;
 let titleFinalAdded=false;
 matches.forEach((m,i)=>{
 if(m[4]==="16avos" && !title16Added){
@@ -627,8 +628,7 @@ if(m[4]==="3º Puesto" && !titleThirdAdded){
     container.appendChild(title);
     titleThirdAdded=true;
 }
-let titleThirdAdded=false;
-if(m[4]==="FINAL" && !titleFinalAdded){
+    if(m[4]==="FINAL" && !titleFinalAdded){
     const title=document.createElement("div");
     title.className="roundTitle";
     title.style.background="linear-gradient(90deg,#003b8e,#d4af37)";
@@ -926,6 +926,7 @@ document.querySelectorAll(".roundTitle").forEach(title=>{
 if(texto.includes("OCTAVOS")) ronda="octavos";
 if(texto.includes("CUARTOS")) ronda="Cuartos";
 if(texto.includes("SEMIFINALES")) ronda="Semis";
+if(texto.includes("3º Y 4º")) ronda="3º Puesto";
 if(texto.includes("FINAL")) ronda="FINAL";
 
   const visible=[...document.querySelectorAll(".match")]

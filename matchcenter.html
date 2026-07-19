@@ -564,7 +564,15 @@ const matches=[
   
 let saved={};
 const container=document.getElementById("matches");
+document.body.insertAdjacentHTML("beforeend",`
+  <datalist id="referees-list">
+    ${referees.map(r=>`<option value="${r}">`).join("")}
+  </datalist>
 
+  <datalist id="var-list">
+    ${varOfficials.map(v=>`<option value="${v}">`).join("")}
+  </datalist>
+`);
 function save(){
   localStorage.setItem("matchCenterData",JSON.stringify(saved));
   db.ref("matchCenterData").set(saved);
@@ -637,119 +645,264 @@ function render(){
     }
 
     if(m[4]==="FINAL" && !titleFinalAdded){
-    const title=document.createElement("div");
-    title.className="roundTitle";
-    title.style.background="linear-gradient(90deg,#003b8e,#d4af37)";
-    title.textContent="FINAL";
-    container.appendChild(title);
-    titleFinalAdded=true;
-}
-
-const data = saved[i] || {};
-const state = data.state || m[6];
+      const title=document.createElement("div");
+      title.className="roundTitle";
+      title.style.background="linear-gradient(90deg,#003b8e,#d4af37)";
+      title.textContent="FINAL";
+      container.appendChild(title);
+      titleFinalAdded=true;
     }
-const state=data.state||m[6];
-const card=document.createElement("div");
-card.className = data.featured ? "match featured" : "match";
 
-card.innerHTML=`
-<div class="state ${state==="live"?"live":state==="done"?"done":""}" id="state-${i}">
-${state==="live"?"EN DIRECTO":state==="done"?"Finalizado":"No iniciado"}
-</div>
+    const data=saved[i]||{};
+    const state=data.state||m[6];
 
-<div class="date">${m[0]}</div>
+    const card=document.createElement("div");
+    card.className=data.featured ? "match featured" : "match";
 
-<div class="teams">
-  <div class="team">
-    <img class="flag" src="https://flagcdn.com/w20/${flag(m[1])}.png">${m[1]}
-  </div>
+    card.innerHTML=`
+      <div
+        class="state ${state==="live"?"live":state==="done"?"done":""}"
+        id="state-${i}"
+      >
+        ${state==="live"?"EN DIRECTO":state==="done"?"Finalizado":"No iniciado"}
+      </div>
 
-  <div class="hourBlock">
-    <div class="favorite"
-         onclick="toggleFeatured(${i})"
-         title="Favorito">
-         ${data.featured ? "⭐" : "☆"}
-    </div>
-    <div class="hour">${m[2]}</div>
-</div>
+      <div class="date">${m[0]}</div>
 
-  <div class="team">
-    <img class="flag" src="https://flagcdn.com/w20/${flag(m[3])}.png">${m[3]}
-  </div>
-</div>
+      <div class="teams">
+        <div class="team">
+          <img
+            class="flag"
+            src="https://flagcdn.com/w20/${flag(m[1])}.png"
+            alt="${m[1]}"
+          >
+          ${m[1]}
+        </div>
 
-<div class="info">Grupo ${m[4]} · ${m[5]}</div>
-<div class="ref" id="ref-${i}">Árbitro: ${data.referee||"Sin asignar"}</div>
-<div class="ref" id="varref-${i}">VAR: ${data.varReferee||"Sin asignar"}</div>
+        <div class="hourBlock">
+          <div
+            class="favorite"
+            onclick="toggleFeatured(${i})"
+            title="Favorito"
+          >
+            ${data.featured ? "⭐" : "☆"}
+          </div>
 
-<input
-  id="refsel-${i}"
-  list="referees-list"
-  placeholder="Buscar o seleccionar árbitro"
-  value="${data.referee || ""}"
->
+          <div class="hour">${m[2]}</div>
+        </div>
 
-<datalist id="referees-list">
-  ${referees.map(r => `<option value="${r}">`).join("")}
-</datalist>
-<input
-  id="varsel-${i}"
-  list="var-list"
-  placeholder="Buscar o seleccionar VAR"
-  value="${data.varReferee || ""}"
->
+        <div class="team">
+          <img
+            class="flag"
+            src="https://flagcdn.com/w20/${flag(m[3])}.png"
+            alt="${m[3]}"
+          >
+          ${m[3]}
+        </div>
+      </div>
 
-<datalist id="var-list">
-  ${varOfficials.map(v => `<option value="${v}">`).join("")}
-</datalist>
-<select id="statesel-${i}">
-<option value="not" ${state==="not"?"selected":""}>No iniciado</option>
-<option value="live" ${state==="live"?"selected":""}>En directo</option>
-<option value="done" ${state==="done"?"selected":""}>Finalizado</option>
-</select>
+      <div class="info">
+        ${["16avos","octavos","Cuartos","Semis","3º Puesto","FINAL"].includes(m[4])
+          ? "Fase"
+          : "Grupo"
+        } ${m[4]} · ${m[5]}
+      </div>
 
-<div class="btnRow">
-<button class="btnHalf assign" onclick="apply(${i})">Asignar</button>
-<button class="btnHalf remove" onclick="clearRef(${i})">Eliminar</button>
-</div>
+      <div class="ref" id="ref-${i}">
+        Árbitro: ${data.referee||"Sin asignar"}
+      </div>
 
-<button class="liveBtn" id="live-${i}" style="display:${state==="live"?"block":"none"}" onclick="openMatch()">📺 Ver en directo</button>
-<button class="evalBtn" onclick="toggleEval(${i})">Valorar partido</button>
+      <div class="ref" id="varref-${i}">
+        VAR: ${data.varReferee||"Sin asignar"}
+      </div>
 
-<div class="evalPanel" id="eval-${i}">
-<div class="evalGrid">
-<div><label>Mi valoración</label><input id="personal-${i}" type="number" step="0.1" min="0" max="10" value="${data.personal||""}"></div>
-<div><label>Revisiones VAR</label><input id="varReviews-${i}" type="number" min="0" value="${data.varReviews||0}"></div>
-<div><label>Error menor</label><input id="menores-${i}" type="number" min="0" value="${data.menores||0}"></div>
-<div><label>Error importante</label><input id="importantes-${i}" type="number" min="0" value="${data.importantes||0}"></div>
-<div><label>Error grave</label><input id="graves-${i}" type="number" min="0" value="${data.graves||0}"></div>
-<div><label>Error del VAR</label><input id="var-${i}" type="number" min="0" value="${data.varError||0}"></div>
-<div><label>Gestión deficiente</label><input id="gestion-${i}" type="number" min="0" value="${data.gestion||0}"></div>
-<div><label>Amarilla mal</label><input id="amarillaMal-${i}" type="number" min="0" value="${data.amarillaMal||0}"></div>
-<div><label>Amarilla bien</label><input id="amarillaBien-${i}" type="number" min="0" value="${data.amarillaBien||0}"></div>
-<div><label>Roja correcta</label><input id="rojas-${i}" type="number" min="0" value="${data.rojas||0}"></div>
-<div><label>Roja mal sacada</label><input id="rojaMal-${i}" type="number" min="0" value="${data.rojaMal||0}"></div>
-<div><label>Penalti correcto</label><input id="penaltis-${i}" type="number" min="0" value="${data.penaltis||0}"></div>
-<div><label>VAR corrige bien</label><input id="varGood-${i}" type="number" min="0" value="${data.varGood||0}"></div>
-<div><label>Ventaja excelente</label><input id="ventajas-${i}" type="number" min="0" value="${data.ventajas||0}"></div>
-<div><label>Control excelente</label><input id="control-${i}" type="number" min="0" value="${data.control||0}"></div>
-<div><label>Añadido correcto</label><input id="addedGood-${i}" type="number" min="0" value="${data.addedGood||0}"></div>
-<div><label>Añadido incorrecto</label><input id="addedBad-${i}" type="number" min="0" value="${data.addedBad||0}"></div>
-</div>
+      <input
+        id="refsel-${i}"
+        list="referees-list"
+        placeholder="Buscar o seleccionar árbitro"
+        value="${data.referee||""}"
+      >
 
-<button class="evalBtn" onclick="calcularNota(${i})">Calcular nota</button>
+      <input
+        id="varsel-${i}"
+        list="var-list"
+        placeholder="Buscar o seleccionar VAR"
+        value="${data.varReferee||""}"
+      >
 
-<button class="deleteEvalBtn" onclick="eliminarValoracion(${i})">Eliminar valoración</button>
+      <select id="statesel-${i}">
+        <option value="not" ${state==="not"?"selected":""}>
+          No iniciado
+        </option>
 
-<div class="noteBox" id="nota-${i}">${data.notaHTML||"Sin valoración"}</div>
-`;
+        <option value="live" ${state==="live"?"selected":""}>
+          En directo
+        </option>
 
-container.appendChild(card);
-});
-applyFilters();
+        <option value="done" ${state==="done"?"selected":""}>
+          Finalizado
+        </option>
+      </select>
+
+      <div class="btnRow">
+        <button
+          class="btnHalf assign"
+          onclick="apply(${i})"
+        >
+          Asignar
+        </button>
+
+        <button
+          class="btnHalf remove"
+          onclick="clearRef(${i})"
+        >
+          Eliminar
+        </button>
+      </div>
+
+      <button
+        class="liveBtn"
+        id="live-${i}"
+        style="display:${state==="live"?"block":"none"}"
+        onclick="openMatch()"
+      >
+        📺 Ver en directo
+      </button>
+
+      <button
+        class="evalBtn"
+        onclick="toggleEval(${i})"
+      >
+        Valorar partido
+      </button>
+
+      <div class="evalPanel" id="eval-${i}">
+        <div class="evalGrid">
+
+          <div>
+            <label>Mi valoración</label>
+            <input
+              id="personal-${i}"
+              type="number"
+              step="0.1"
+              min="0"
+              max="10"
+              value="${data.personal||""}"
+            >
+          </div>
+
+          <div>
+            <label>Revisiones VAR</label>
+            <input
+              id="varReviews-${i}"
+              type="number"
+              min="0"
+              value="${data.varReviews||0}"
+            >
+          </div>
+
+          <div>
+            <label>Error menor</label>
+            <input id="menores-${i}" type="number" min="0" value="${data.menores||0}">
+          </div>
+
+          <div>
+            <label>Error importante</label>
+            <input id="importantes-${i}" type="number" min="0" value="${data.importantes||0}">
+          </div>
+
+          <div>
+            <label>Error grave</label>
+            <input id="graves-${i}" type="number" min="0" value="${data.graves||0}">
+          </div>
+
+          <div>
+            <label>Error del VAR</label>
+            <input id="var-${i}" type="number" min="0" value="${data.varError||0}">
+          </div>
+
+          <div>
+            <label>Gestión deficiente</label>
+            <input id="gestion-${i}" type="number" min="0" value="${data.gestion||0}">
+          </div>
+
+          <div>
+            <label>Amarilla mal</label>
+            <input id="amarillaMal-${i}" type="number" min="0" value="${data.amarillaMal||0}">
+          </div>
+
+          <div>
+            <label>Amarilla bien</label>
+            <input id="amarillaBien-${i}" type="number" min="0" value="${data.amarillaBien||0}">
+          </div>
+
+          <div>
+            <label>Roja correcta</label>
+            <input id="rojas-${i}" type="number" min="0" value="${data.rojas||0}">
+          </div>
+
+          <div>
+            <label>Roja mal sacada</label>
+            <input id="rojaMal-${i}" type="number" min="0" value="${data.rojaMal||0}">
+          </div>
+
+          <div>
+            <label>Penalti correcto</label>
+            <input id="penaltis-${i}" type="number" min="0" value="${data.penaltis||0}">
+          </div>
+
+          <div>
+            <label>VAR corrige bien</label>
+            <input id="varGood-${i}" type="number" min="0" value="${data.varGood||0}">
+          </div>
+
+          <div>
+            <label>Ventaja excelente</label>
+            <input id="ventajas-${i}" type="number" min="0" value="${data.ventajas||0}">
+          </div>
+
+          <div>
+            <label>Control excelente</label>
+            <input id="control-${i}" type="number" min="0" value="${data.control||0}">
+          </div>
+
+          <div>
+            <label>Añadido correcto</label>
+            <input id="addedGood-${i}" type="number" min="0" value="${data.addedGood||0}">
+          </div>
+
+          <div>
+            <label>Añadido incorrecto</label>
+            <input id="addedBad-${i}" type="number" min="0" value="${data.addedBad||0}">
+          </div>
+
+        </div>
+
+        <button
+          class="evalBtn"
+          onclick="calcularNota(${i})"
+        >
+          Calcular nota
+        </button>
+
+        <button
+          class="deleteEvalBtn"
+          onclick="eliminarValoracion(${i})"
+        >
+          Eliminar valoración
+        </button>
+
+        <div class="noteBox" id="nota-${i}">
+          ${data.notaHTML||"Sin valoración"}
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+
+  applyFilters();
 }
-
-function apply(i){
   const ref = document.getElementById("refsel-"+i).value;
   const varRef = document.getElementById("varsel-"+i).value;
   const state = document.getElementById("statesel-"+i).value;
@@ -906,46 +1059,56 @@ function eliminarValoracion(i){
 }
 
 function applyFilters(){
-const search=document.getElementById("search").value.toLowerCase();
-const filter=document.getElementById("filter").value;
+  const search=document.getElementById("search").value
+    .trim()
+    .toLowerCase();
 
-document.querySelectorAll(".match").forEach((card,i)=>{
-const state=(saved[i]&&saved[i].state)||matches[i][6];
-const group=matches[i][4];
-const text=matches[i].join(" ").toLowerCase();
+  const filter=document.getElementById("filter").value;
 
-let visible=text.includes(search);
+  const cards=document.querySelectorAll(".match");
 
-if(filter!=="all"){
-  if(["not","live","done"].includes(filter)){
-    visible=visible && state===filter;
-  }else if(filter==="fav"){
-    visible=visible && saved[i] && saved[i].featured;
-  }else{
-    visible=visible && group===filter;
-  }
-}
+  cards.forEach((card,i)=>{
+    const match=matches[i];
+    const state=(saved[i]&&saved[i].state)||match[6];
+    const phase=match[4];
+    const text=match.join(" ").toLowerCase();
 
-card.style.display=visible?"block":"none";
-});
+    let visible=text.includes(search);
 
-document.querySelectorAll(".roundTitle").forEach(title=>{
-  const texto=title.textContent;
+    if(filter!=="all"){
+      if(["not","live","done"].includes(filter)){
+        visible=visible && state===filter;
+      }else if(filter==="fav"){
+        visible=visible && Boolean(saved[i]&&saved[i].featured);
+      }else{
+        visible=visible && phase===filter;
+      }
+    }
 
-  let ronda="";
- if(texto.includes("16AVOS")) ronda="16avos";
-if(texto.includes("OCTAVOS")) ronda="octavos";
-if(texto.includes("CUARTOS")) ronda="Cuartos";
-if(texto.includes("SEMIFINALES")) ronda="Semis";
-if(texto.includes("3º Y 4º")) ronda="3º Puesto";
-if(texto==="FINAL") ronda="FINAL";
+    card.style.display=visible ? "block" : "none";
+  });
 
-  const visible=[...document.querySelectorAll(".match")]
-    .filter(card=>card.style.display!=="none")
-    .some(card=>card.querySelector(".info")?.textContent.includes(ronda));
+  document.querySelectorAll(".roundTitle").forEach(title=>{
+    const text=title.textContent.trim();
 
-  title.style.display=visible?"block":"none";
-});
+    let phase="";
+
+    if(text==="16AVOS") phase="16avos";
+    if(text==="OCTAVOS DE FINAL") phase="octavos";
+    if(text==="CUARTOS DE FINAL") phase="Cuartos";
+    if(text==="SEMIFINALES") phase="Semis";
+    if(text==="3º Y 4º PUESTO") phase="3º Puesto";
+    if(text==="FINAL") phase="FINAL";
+
+    const hasVisibleMatch=[...cards].some((card,i)=>{
+      return (
+        card.style.display!=="none" &&
+        matches[i][4]===phase
+      );
+    });
+
+    title.style.display=hasVisibleMatch ? "block" : "none";
+  });
 }
 
 document.getElementById("search").addEventListener("input",applyFilters);
